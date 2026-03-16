@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('Caught error:', message, 'at', source, ':', lineno, ':', colno);
+      };
+      
+      // Defensive check for fetch property to prevent "Cannot set property fetch" errors
+      // which can occur in some sandbox environments when libraries try to polyfill fetch.
+      (function() {
+        try {
+          const desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+          console.log('fetch descriptor:', desc);
+          if (desc && !desc.writable && !desc.set && desc.configurable) {
+            const originalFetch = window.fetch;
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return originalFetch; },
+              set: function(v) { 
+                console.warn('Blocked attempt to overwrite read-only fetch property.');
+              },
+              configurable: true,
+              enumerable: true
+            });
+            console.log('Successfully redefined window.fetch');
+          } else {
+            console.log('Could not redefine window.fetch');
+          }
+        } catch (e) {
+          console.error('Error redefining window.fetch:', e);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
