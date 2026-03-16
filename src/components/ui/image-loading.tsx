@@ -290,6 +290,7 @@ export default function ImageLoader({
           alt={alt}
           crossOrigin="anonymous"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
           style={{
             opacity: showImage ? 1 : 0,
             transition: 'opacity 300ms ease'

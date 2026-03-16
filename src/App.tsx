@@ -258,7 +258,7 @@ export default function App() {
             >
               <CardItem translateZ={0.5} className="relative w-full h-full">
                 <img 
-                  src="/public/images/projects/portfolio-hero.webp" 
+                  src="/images/projects/portfolio-hero.webp" 
                   alt="Portfolio" 
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => {
@@ -266,13 +266,14 @@ export default function App() {
                     e.currentTarget.className = "absolute inset-0 w-full h-full object-cover grayscale opacity-20";
                   }}
                   referrerPolicy="no-referrer"
+                  loading="lazy"
                 />
               </CardItem>
             </motion.div>
           </CardContainer>
         </section>
 
-        {/* Section 2: Devouring Details */}
+        {/* Section 2: Resume */}
         <section className="snap-section">
           <CardContainer>
             <motion.div 
@@ -284,31 +285,17 @@ export default function App() {
                 damping: 20,
                 delay: 0.1
               }}
-              className="card-content bg-white flex flex-col justify-between py-16"
+              className="card-content bg-white !p-0 overflow-hidden"
               style={{ transformStyle: "preserve-3d" }}
             >
-              <CardItem translateZ={1} className="absolute top-12 right-12 text-[11px] uppercase tracking-[0.3em] font-bold opacity-30">
-                Devouring Details
-              </CardItem>
-              
-              <div className="flex-1 flex items-center justify-center w-full">
-                <CardItem translateZ={3}>
-                  <motion.h2 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-[50vh] font-black leading-none tracking-[-0.08em]"
-                  >
-                    D
-                  </motion.h2>
-                </CardItem>
-              </div>
-
-              <CardItem translateZ={1.5} className="w-full max-w-[458px]">
-                <p className="text-lg font-medium leading-tight tracking-tight">
-                  A design studio focused on the intersection of craft and code. 
-                  Building tools for thought and interfaces that feel like magic.
-                </p>
+              <CardItem translateZ={0.5} className="absolute inset-0">
+                <img 
+                  src="/images/projects/portfolio-resume.webp" 
+                  alt="Resume" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                />
               </CardItem>
             </motion.div>
           </CardContainer>
@@ -337,6 +324,7 @@ export default function App() {
                     alt="科沃斯超级导购" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 
@@ -379,6 +367,7 @@ export default function App() {
                     alt="辛顿智能体平台" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
@@ -420,6 +409,7 @@ export default function App() {
                     alt="用户自助服务大厅" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
@@ -461,6 +451,7 @@ export default function App() {
                     alt="彼言英语 BlaBla" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
@@ -502,6 +493,7 @@ export default function App() {
                     alt="Connect" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
@@ -543,6 +535,7 @@ export default function App() {
                     alt="About" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
@@ -579,10 +572,11 @@ export default function App() {
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/public/images/projects/portfolio-connect.webp" 
+                    src="/images/projects/portfolio-connect.webp" 
                     alt="Connect" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                 </CardItem>
               </div>
@@ -689,7 +683,7 @@ export default function App() {
             <div className="w-full">
               {/* Global Loading Spinner */}
               {isFirstImageLoading && (
-                <div className="fixed inset-0 pt-[400px] flex justify-center z-[210] bg-white/50">
+                <div className="fixed inset-0 pt-[400px] flex justify-center z-[205] bg-white/50">
                   <Loader2 className="w-10 h-10 animate-spin text-[#dddddd]" />
                 </div>
               )}
