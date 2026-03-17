@@ -82,19 +82,19 @@ export default function App() {
 
   const projectImages: Record<string, string[]> = {
     'kovos-guide': [
-      '/public/images/projects/kovos-guide-detail-01.webp',
-      '/public/images/projects/kovos-guide-detail-02.webp',
-      '/public/images/projects/kovos-guide-detail-03.webp',
-      '/public/images/projects/kovos-guide-detail-04.webp',
+      '/images/projects/kovos-guide-detail-01.webp',
+      '/images/projects/kovos-guide-detail-02.webp',
+      '/images/projects/kovos-guide-detail-03.webp',
+      '/images/projects/kovos-guide-detail-04.webp',
     ],
     'kovos-agent': [
-      '/public/images/projects/kovos-agent-detail-01.webp',
-      '/public/images/projects/kovos-agent-detail-02.webp',
-      '/public/images/projects/kovos-agent-detail-03.webp',
+      '/images/projects/kovos-agent-detail-01.webp',
+      '/images/projects/kovos-agent-detail-02.webp',
+      '/images/projects/kovos-agent-detail-03.webp',
     ],
     'raycast': [
-      '/public/images/projects/self-service-detail-01.webp',
-      '/public/images/projects/self-service-detail-02.webp',
+      '/images/projects/self-service-detail-01.webp',
+      '/images/projects/self-service-detail-02.webp',
     ],
     'writing': [
       '/images/projects/blabla-english-detail-01.webp',
