@@ -432,7 +432,7 @@ export default function App() {
             >
               <CardItem translateZ={0.5} className="relative w-full h-full">
                 <img 
-                  src={asset('images/projects/portfolio-hero.webp')} 
+                  src={asset('images/projects/portfolio-hero-2026.webp')} 
                   alt="Portfolio" 
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => {
