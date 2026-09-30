@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02 统一身份登录页 · Design Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./case-detail-shared.css">
+  <!-- 通用版式见 CASE_DETAIL_SPEC.md；本页仅保留案例专属内容 -->
+</head>
+<body data-accent="blue">
+  <article class="case-page">
+    <div class="case-top">
+      <div class="login-orbit" aria-hidden="true">
+        <svg viewBox="0 0 680 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="340" cy="340" r="4" fill="#A8B4C4" opacity="0.72" />
+          <circle cx="340" cy="340" r="40" stroke="#A8B4C4" stroke-width="1.2" opacity="0.5" />
+          <circle cx="340" cy="340" r="90" stroke="#A8B4C4" stroke-width="1.2" opacity="0.46" />
+          <circle cx="340" cy="340" r="155" stroke="#A8B4C4" stroke-width="1.2" opacity="0.4" />
+          <circle cx="340" cy="340" r="240" stroke="#A8B4C4" stroke-width="1.2" opacity="0.34" />
+          <circle cx="340" cy="340" r="340" stroke="#A8B4C4" stroke-width="1.2" opacity="0.28" />
+
+          <path id="login-case-orb-1" d="M250,340 a90,90 0 1,0 180,0 a90,90 0 1,0 -180,0" fill="none" stroke="none" />
+          <path id="login-case-orb-2" d="M185,340 a155,155 0 1,0 310,0 a155,155 0 1,0 -310,0" fill="none" stroke="none" />
+          <path id="login-case-orb-3" d="M100,340 a240,240 0 1,0 480,0 a240,240 0 1,0 -480,0" fill="none" stroke="none" />
+          <path id="login-case-orb-4" d="M0,340 a340,340 0 1,0 680,0 a340,340 0 1,0 -680,0" fill="none" stroke="none" />
+
+          <circle r="3" fill="#9AA8B8">
+            <animateMotion dur="18s" begin="-6s" repeatCount="indefinite" calcMode="linear">
+              <mpath href="#login-case-orb-1" />
+            </animateMotion>
+            <animate attributeName="opacity" dur="18s" begin="-6s" repeatCount="indefinite" values="0.45;0.75;0.45" />
+          </circle>
+          <circle r="4" fill="#9AA8B8">
+            <animateMotion dur="26s" begin="-3s" repeatCount="indefinite" calcMode="linear">
+              <mpath href="#login-case-orb-2" />
+            </animateMotion>
+            <animate attributeName="opacity" dur="26s" begin="-3s" repeatCount="indefinite" values="0.45;0.8;0.45" />
+          </circle>
+          <circle r="3.5" fill="#6BA3FF">
+            <animateMotion dur="36s" begin="-12s" repeatCount="indefinite" calcMode="linear">
+              <mpath href="#login-case-orb-3" />
+            </animateMotion>
+            <animate attributeName="opacity" dur="36s" begin="-12s" repeatCount="indefinite" values="0.4;0.75;0.4" />
+          </circle>
+          <circle r="3.5" fill="#9AA8B8">
+            <animateMotion dur="44s" begin="-20s" repeatCount="indefinite" calcMode="linear">
+              <mpath href="#login-case-orb-4" />
+            </animateMotion>
+            <animate attributeName="opacity" dur="44s" begin="-20s" repeatCount="indefinite" values="0.35;0.65;0.35" />
+          </circle>
+        </svg>
+      </div>
+
+      <header class="case-nav">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK</a>
+        <div class="case-nav-meta">02 <span>/</span> 04</div>
+      </header>
+
+      <header class="case-hero case-hero-with-aside">
+        <div class="case-hero-copy">
+          <span class="case-hero-mark" aria-hidden="true">02</span>
+          <p class="case-kicker">02 / PROJECT</p>
+          <h1 class="case-title">统一身份登录页</h1>
+          <p class="case-lead">利用以 AI 快速建立页面初稿，<br>再将它打磨为可交付的响应式产品界面。</p>
+        </div>
+
+        <aside
+          class="login-hero-flow"
+          aria-label="工作流摘要"
+          style="--login-hero-flow-mr:44px;--login-hero-flow-mt:18px"
+        >
+          <span class="login-hero-flow-kicker">WORKFLOW</span>
+          <ol class="login-hero-flow-steps">
+            <li>Figma Design</li>
+            <li>Figma Make</li>
+            <li>Cursor</li>
+            <li>交付</li>
+          </ol>
+          <p>从草图到可交付代码</p>
+        </aside>
+      </header>
+    </div>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>以 AI 贯通设计与代码交付</h2>
+        <p class="case-block-lead-nowrap">先在 Figma Design 里定结构，再交给 Figma Make 生成高保真，下载代码后在 Cursor 中继续打磨交互，最终交付完整代码包。</p>
+      </div>
+
+      <div class="login-workflow" aria-label="设计到交付工作流">
+        <figure class="login-step">
+          <div class="login-step-shot">
+            <img src="./case-assets/login/figma-sketch.png" alt="Figma Design 草图界面截图" width="1440" height="810" loading="lazy">
+            <span class="login-step-badge">01 · FIGMA DESIGN</span>
+          </div>
+          <figcaption>
+            <span class="login-step-icon-wrap" aria-hidden="true">
+              <img class="login-step-icon" src="./case-assets/login/icon-figma.png" alt="" width="64" height="64" loading="lazy">
+            </span>
+            <div class="login-step-copy">
+              <strong>Figma Design 画出草图</strong>
+              <span>先锁定左右分栏、登录表单与扫码区的信息层级。</span>
+            </div>
+          </figcaption>
+        </figure>
+
+        <div class="login-step-arrow" aria-hidden="true">→</div>
+
+        <figure class="login-step">
+          <div class="login-step-shot">
+            <img src="./case-assets/login/figma-make.png" alt="Figma Make 生成高保真页面截图" width="1440" height="900" loading="lazy">
+            <span class="login-step-badge">02 · FIGMA MAKE</span>
+          </div>
+          <figcaption>
+            <span class="login-step-icon-wrap" aria-hidden="true">
+              <img class="login-step-icon" src="./case-assets/login/icon-make.png" alt="" width="64" height="64" loading="lazy">
+            </span>
+            <div class="login-step-copy">
+              <strong>Figma Make 生成高保真</strong>
+              <span>用提示迭代视觉、动效与组件细节，快速得到可预览页面。</span>
+            </div>
+          </figcaption>
+        </figure>
+
+        <div class="login-step-arrow" aria-hidden="true">→</div>
+
+        <figure class="login-step">
+          <div class="login-step-shot">
+            <img src="./case-assets/login/cursor-polish.png" alt="在 Cursor 中完善交互与打包交付截图" width="1440" height="900" loading="lazy">
+            <span class="login-step-badge">03 · CURSOR</span>
+          </div>
+          <figcaption>
+            <span class="login-step-icon-wrap" aria-hidden="true">
+              <img class="login-step-icon" src="./case-assets/login/icon-cursor.png" alt="" width="64" height="64" loading="lazy">
+            </span>
+            <div class="login-step-copy">
+              <strong>Cursor 完善交互</strong>
+              <span>下载代码后继续打磨状态反馈、语言切换、轨道动效，并整理交付包。</span>
+            </div>
+          </figcaption>
+        </figure>
+      </div>
+
+      <aside class="principle-panel principle-panel-below" aria-label="工作流说明">
+        <div class="principle-head">
+          <span>HOW IT WORKS</span>
+        </div>
+        <div class="principle-layers">
+          <div class="principle-layer">
+            <div class="principle-tag">设计探索</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>Figma Design</i><b>→</b><i>Figma Make</i>
+            </div>
+            <p>草图先把信息架构讲清楚；Make 负责把方向迅速推到高保真，减少反复画板的时间成本。</p>
+          </div>
+          <div class="principle-layer">
+            <div class="principle-tag">工程打磨</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>下载代码</i><b>→</b><i>Cursor 细化</i><b>→</b><i>交付包</i>
+            </div>
+            <p>在真实代码里补齐校验、显隐、多语言与响应式，再输出可分享 HTML 与源码包给开发接手。</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>使用 AI 高效生产背景视觉图片</h2>
+        <p>登录页左侧主视觉分别用 GPT Image 2.0 与 Gemini Nano Banana 2 生成候选，再筛选、微调后进入最终界面。</p>
+      </div>
+
+      <div class="login-ai-stack">
+        <div class="login-ai-pairs" aria-label="AI 背景生成对照">
+        <article class="login-ai-pair">
+          <div class="login-ai-pair-head">
+            <img class="login-ai-pair-icon" src="./case-assets/login/icon-gpt-image.png" alt="" width="22" height="22" decoding="async">
+            <strong>使用GPT Image 2.0 生成图片</strong>
+          </div>
+          <div class="login-ai-pair-media">
+            <figure class="login-ai-process">
+              <div class="login-ai-media-frame login-ai-media-frame-process">
+                <img src="./case-assets/login/chatgpt-bg.jpg" alt="GPT Image 2.0 生成登录背景过程截图" width="900" height="1200" loading="lazy">
+              </div>
+            </figure>
+            <figure class="login-ai-result">
+              <button
+                type="button"
+                class="login-ai-media-frame login-ai-media-frame-result login-ai-bg-open"
+                data-full-src="./case-assets/login/bg1.jpg"
+                data-full-alt="bg1.jpg 原图"
+                aria-label="查看 bg1.jpg 原图"
+              >
+                <img src="./case-assets/login/bg1.jpg" alt="GPT Image 2.0 生成的登录背景结果" width="1600" height="900" loading="lazy">
+                <span class="login-ai-bg-hint" aria-hidden="true">点击查看图片</span>
+              </button>
+            </figure>
+          </div>
+        </article>
+
+        <article class="login-ai-pair">
+          <div class="login-ai-pair-head">
+            <img class="login-ai-pair-icon" src="./case-assets/login/icon-gemini-nano.png" alt="" width="22" height="22" decoding="async">
+            <strong>使用Gemini Nano Banana 2 生成图片</strong>
+          </div>
+          <div class="login-ai-pair-media">
+            <figure class="login-ai-process">
+              <div class="login-ai-media-frame login-ai-media-frame-process">
+                <img src="./case-assets/login/gemini-bg.jpg" alt="Gemini Nano Banana 2 生成登录背景过程截图" width="900" height="1200" loading="lazy">
+              </div>
+            </figure>
+            <figure class="login-ai-result">
+              <button
+                type="button"
+                class="login-ai-media-frame login-ai-media-frame-result login-ai-bg-open"
+                data-full-src="./case-assets/login/bg2.jpg"
+                data-full-alt="bg2.jpg 原图"
+                aria-label="查看 bg2.jpg 原图"
+              >
+                <img src="./case-assets/login/bg2.jpg" alt="Gemini Nano Banana 2 生成的登录背景结果" width="1600" height="900" loading="lazy">
+                <span class="login-ai-bg-hint" aria-hidden="true">点击查看图片</span>
+              </button>
+            </figure>
+          </div>
+        </article>
+        </div>
+
+        <article class="login-ai-explore" aria-label="其他探索视觉方案">
+        <div class="login-ai-pair-head">
+          <strong>其他探索视觉方案</strong>
+        </div>
+        <div class="login-ai-explore-marquee">
+          <div class="login-ai-explore-track">
+            <div class="login-ai-explore-row">
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/1.jpg" data-full-alt="探索背景方案 1" aria-label="查看探索背景方案 1">
+            <img src="./case-assets/login/explore-bg/1.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/2.jpg" data-full-alt="探索背景方案 2" aria-label="查看探索背景方案 2">
+            <img src="./case-assets/login/explore-bg/2.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/3.jpg" data-full-alt="探索背景方案 3" aria-label="查看探索背景方案 3">
+            <img src="./case-assets/login/explore-bg/3.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/4.jpg" data-full-alt="探索背景方案 4" aria-label="查看探索背景方案 4">
+            <img src="./case-assets/login/explore-bg/4.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/5.jpg" data-full-alt="探索背景方案 5" aria-label="查看探索背景方案 5">
+            <img src="./case-assets/login/explore-bg/5.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/6.jpg" data-full-alt="探索背景方案 6" aria-label="查看探索背景方案 6">
+            <img src="./case-assets/login/explore-bg/6.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/7.jpg" data-full-alt="探索背景方案 7" aria-label="查看探索背景方案 7">
+            <img src="./case-assets/login/explore-bg/7.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+          <button type="button" class="login-ai-explore-thumb login-ai-bg-open" data-full-src="./case-assets/login/explore-bg/8.jpg" data-full-alt="探索背景方案 8" aria-label="查看探索背景方案 8">
+            <img src="./case-assets/login/explore-bg/8.jpg" alt="" width="320" height="200" loading="lazy">
+          </button>
+            </div>
+          </div>
+        </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-block case-block-last">
+      <div class="case-block-copy">
+        <h2>最终上线的登录页，可直接体验</h2>
+        <p>左右分栏、响应式、内部/外部登录、密码显隐、语言切换与轨道点缀动效已落地；下方为真实页面内嵌预览。</p>
+      </div>
+
+      <figure class="login-showcase">
+        <div class="login-showcase-stage">
+          <div class="browser-chrome" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <div class="browser-url">https://sso.ecovacs.cn/login</div>
+          </div>
+          <iframe
+            class="login-showcase-frame"
+            src="./ecovacs-login/ecovacs-login-share.html"
+            title="统一身份登录页真实预览"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+          ></iframe>
+        </div>
+      </figure>
+
+      <div class="login-deliver">
+        <div class="login-deliver-copy">
+          <span class="login-bg-kicker">DELIVERY</span>
+          <div class="login-deliver-body">
+            <strong>开发可继续使用的代码包</strong>
+            <p>包含可分享静态页与 Vite + React 源码，便于二次修改与工程接入。</p>
+          </div>
+          <svg class="login-deliver-code-icon" viewBox="0 0 64 64" width="72" height="72" aria-hidden="true" focusable="false">
+            <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M22 18 L8 32 L22 46"/>
+            <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M42 18 L56 32 L42 46"/>
+            <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" d="M36 14 L28 50"/>
+          </svg>
+        </div>
+        <div class="file-tree" aria-label="交付包目录">
+          <div class="skill-tree-body">
+            <div class="skill-tree-row is-root"><code>login交付代码包/</code></div>
+            <div class="skill-tree-row"><code>├─ index.html</code><span>← 可分享入口页</span></div>
+            <div class="skill-tree-row"><code>├─ src/</code><span>← 页面与组件源码</span></div>
+            <div class="skill-tree-row"><code>├─ dist/</code><span>← 可分享构建结果</span></div>
+            <div class="skill-tree-row"><code>├─ docs/</code><span>← 设计说明</span></div>
+            <div class="skill-tree-row"><code>└─ guidelines/</code><span>← 实现指引</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div
+      class="case-bottom"
+      style="--case-bottom-pad-top:100px;--case-bottom-pad-bottom:12px;--case-footer-shift:-32px"
+    >
+      <footer class="case-page-footer">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK TO CASES</a>
+        <span>02 统一身份登录页</span>
+      </footer>
+    </div>
+  </article>
+
+  <dialog class="login-bg-lightbox" id="loginBgLightbox" aria-label="背景原图预览">
+    <button type="button" class="login-bg-lightbox-close" aria-label="关闭">×</button>
+    <img class="login-bg-lightbox-img" id="loginBgLightboxImg" src="" alt="">
+  </dialog>
+
+  <script>
+    (function () {
+      var dialog = document.getElementById("loginBgLightbox");
+      var img = document.getElementById("loginBgLightboxImg");
+      if (!dialog || !img) return;
+
+      var exploreTrack = document.querySelector(".login-ai-explore-track");
+      if (exploreTrack) {
+        var exploreRow = exploreTrack.querySelector(".login-ai-explore-row");
+        if (exploreRow) {
+          var exploreClone = exploreRow.cloneNode(true);
+          exploreClone.setAttribute("aria-hidden", "true");
+          exploreTrack.appendChild(exploreClone);
+        }
+      }
+
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest(".login-ai-bg-open");
+        if (!btn) return;
+        img.src = btn.getAttribute("data-full-src") || "";
+        img.alt = btn.getAttribute("data-full-alt") || "";
+        if (typeof dialog.showModal === "function") dialog.showModal();
+      });
+
+      dialog.querySelector(".login-bg-lightbox-close").addEventListener("click", function () {
+        dialog.close();
+      });
+      dialog.addEventListener("click", function (e) {
+        if (e.target === dialog) dialog.close();
+      });
+      dialog.addEventListener("cancel", function () {
+        img.removeAttribute("src");
+      });
+
+      function syncLoginAiHeights() {
+        document.querySelectorAll(".login-ai-pair-media").forEach(function (row) {
+          var process = row.querySelector(".login-ai-media-frame-process");
+          var result = row.querySelector(".login-ai-media-frame-result");
+          if (!process || !result) return;
+          var h = process.offsetHeight;
+          if (h > 0) {
+            result.style.minHeight = h + "px";
+            result.style.height = h + "px";
+          }
+        });
+      }
+
+      syncLoginAiHeights();
+      window.addEventListener("load", syncLoginAiHeights);
+      window.addEventListener("resize", syncLoginAiHeights);
+      document.querySelectorAll(".login-ai-pair-media .login-ai-media-frame-process img").forEach(function (imgEl) {
+        if (imgEl.complete) return;
+        imgEl.addEventListener("load", syncLoginAiHeights);
+      });
+    })();
+  </script>
+  <script src="./page-transition.js" defer></script>
+</body>
+</html>

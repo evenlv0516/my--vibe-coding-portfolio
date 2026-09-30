@@ -4,7 +4,7 @@
  */
 
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from 'motion/react';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Plus, ArrowUpRight, ArrowLeft, X, Loader2, ArrowUp, Phone } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import { ProjectImage } from './components/ProjectImage';
@@ -64,15 +64,58 @@ const CardItem = ({ children, translateZ = 0, className = "", style = {} }: { ch
   );
 };
 
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const detailContainerRef = useRef<HTMLDivElement>(null);
+  const diIframeRef = useRef<HTMLIFrameElement>(null);
+  const ignorePopstateRef = useRef(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [showDesignIntelligence, setShowDesignIntelligence] = useState(false);
+  const [diFrameMounted, setDiFrameMounted] = useState(false);
   const [isDetailScrolled, setIsDetailScrolled] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isFirstImageLoading, setIsFirstImageLoading] = useState(true);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeout = useRef<NodeJS.Timeout>();
+
+  const chapterUrl = `${import.meta.env.BASE_URL}design-intelligence/design-intelligence-mockup.html#chapter`;
+
+  const closeDesignIntelligence = useCallback((syncHistory = true) => {
+    setShowDesignIntelligence(false);
+    if (syncHistory && window.history.state?.diOverlay) {
+      ignorePopstateRef.current = true;
+      window.history.back();
+    }
+  }, []);
+
+  const openDesignIntelligence = useCallback(() => {
+    setDiFrameMounted(true);
+    setShowDesignIntelligence(true);
+    if (!window.history.state?.diOverlay) {
+      window.history.pushState({ ...(window.history.state || {}), diOverlay: true }, '');
+    }
+  }, []);
+
+  const openPortfolioProject = useCallback((id: string) => {
+    setActiveProject(id);
+    if (window.history.state?.portfolioProject !== id) {
+      window.history.pushState({ ...(window.history.state || {}), portfolioProject: id }, '');
+    }
+  }, []);
+
+  const closePortfolioProject = useCallback((syncHistory = true) => {
+    setActiveProject(null);
+    if (syncHistory && window.history.state?.portfolioProject) {
+      ignorePopstateRef.current = true;
+      window.history.back();
+    }
+  }, []);
+
+  const warmDesignIntelligence = () => {
+    setDiFrameMounted(true);
+  };
 
   useEffect(() => {
     if (activeProject) {
@@ -82,45 +125,165 @@ export default function App() {
 
   const projectImages: Record<string, string[]> = {
     'kovos-guide': [
-      '/images/projects/kovos-guide-detail-01.webp',
-      '/images/projects/kovos-guide-detail-02.webp',
-      '/images/projects/kovos-guide-detail-03.webp',
-      '/images/projects/kovos-guide-detail-04.webp',
+      asset('images/projects/kovos-guide-detail-01.webp'),
+      asset('images/projects/kovos-guide-detail-02.webp'),
+      asset('images/projects/kovos-guide-detail-03.webp'),
+      asset('images/projects/kovos-guide-detail-04.webp'),
     ],
     'kovos-agent': [
-      '/images/projects/kovos-agent-detail-01.webp',
-      '/images/projects/kovos-agent-detail-02.webp',
-      '/images/projects/kovos-agent-detail-03.webp',
+      asset('images/projects/kovos-agent-detail-01.webp'),
+      asset('images/projects/kovos-agent-detail-02.webp'),
+      asset('images/projects/kovos-agent-detail-03.webp'),
     ],
     'raycast': [
-      '/images/projects/self-service-detail-01.webp',
-      '/images/projects/self-service-detail-02.webp',
+      asset('images/projects/self-service-detail-01.webp'),
+      asset('images/projects/self-service-detail-02.webp'),
     ],
     'writing': [
-      '/images/projects/blabla-english-detail-01.webp',
-      '/images/projects/blabla-english-detail-02.webp',
-      '/images/projects/blabla-english-detail-03.webp',
-      '/images/projects/blabla-english-detail-04.webp',
-      '/images/projects/blabla-english-detail-05.webp',
-      '/images/projects/blabla-english-detail-06.webp',
+      asset('images/projects/blabla-english-detail-01.webp'),
+      asset('images/projects/blabla-english-detail-02.webp'),
+      asset('images/projects/blabla-english-detail-03.webp'),
+      asset('images/projects/blabla-english-detail-04.webp'),
+      asset('images/projects/blabla-english-detail-05.webp'),
+      asset('images/projects/blabla-english-detail-06.webp'),
     ],
     'e-insight': [
-      '/images/projects/e-insight-detail-01.webp',
-      '/images/projects/e-insight-detail-02.webp',
-      '/images/projects/e-insight-detail-03.webp',
+      asset('images/projects/e-insight-detail-01.webp'),
+      asset('images/projects/e-insight-detail-02.webp'),
+      asset('images/projects/e-insight-detail-03.webp'),
     ],
     'xuanxing-uni': [
-      '/images/projects/xuanxing-uni-detail-01.webp',
-      '/images/projects/xuanxing-uni-detail-02.webp',
+      asset('images/projects/xuanxing-uni-detail-01.webp'),
+      asset('images/projects/xuanxing-uni-detail-02.webp'),
     ],
   };
+
+  // Prefetch DI fonts into browser cache before opening the iframe
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL;
+    const fontHref = `${base}design-intelligence/fonts/SmileySans-Oblique.ttf.woff2`;
+    const cssHref =
+      'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@600;700;800&family=ZCOOL+QingKe+HuangYou&display=swap';
+
+    const ensureLink = (attrs: Record<string, string>) => {
+      const exists = Array.from(document.head.querySelectorAll('link')).some(
+        (link) => link.getAttribute('href') === attrs.href
+      );
+      if (exists) return;
+      const link = document.createElement('link');
+      Object.entries(attrs).forEach(([key, value]) => link.setAttribute(key, value));
+      document.head.appendChild(link);
+    };
+
+    ensureLink({
+      rel: 'preload',
+      href: fontHref,
+      as: 'font',
+      type: 'font/woff2',
+      crossorigin: 'anonymous',
+    });
+    ensureLink({ rel: 'preload', href: cssHref, as: 'style' });
+    ensureLink({ rel: 'stylesheet', href: cssHref });
+  }, []);
+
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      // Same-origin only (GitHub / CloudBase static host)
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'close-design-intelligence') {
+        closeDesignIntelligence(true);
+      }
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [closeDesignIntelligence]);
+
+  // Browser Back matches Esc: one level up
+  useEffect(() => {
+    const onPopState = () => {
+      if (ignorePopstateRef.current) {
+        ignorePopstateRef.current = false;
+        return;
+      }
+      if (showDesignIntelligence) {
+        setShowDesignIntelligence(false);
+      }
+      if (activeProject) {
+        setActiveProject(null);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [showDesignIntelligence, activeProject]);
+
+  useEffect(() => {
+    if (!showDesignIntelligence) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const iframe = diIframeRef.current;
+
+    // Opening from portfolio should always land on chapter (replace — no extra history entry)
+    if (iframe) {
+      try {
+        const win = iframe.contentWindow;
+        if (win?.location?.href && win.location.href !== 'about:blank') {
+          win.location.replace(chapterUrl);
+        } else {
+          iframe.src = chapterUrl;
+        }
+      } catch {
+        iframe.src = chapterUrl;
+      }
+    }
+
+    const focusIframe = () => {
+      const frame = diIframeRef.current;
+      if (!frame) return;
+      frame.focus();
+      try {
+        frame.contentWindow?.focus();
+      } catch {
+        /* ignore */
+      }
+    };
+
+    const focusTimer = window.setTimeout(focusIframe, 80);
+    iframe?.addEventListener('load', focusIframe);
+
+    // Parent-level Esc fallback when focus is not inside the iframe
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      const frame = diIframeRef.current;
+      try {
+        const path = frame?.contentWindow?.location?.pathname ?? '';
+        if (/case-[^/]+\.html$/.test(path)) {
+          frame!.contentWindow!.location.replace(chapterUrl);
+          window.setTimeout(focusIframe, 80);
+          return;
+        }
+      } catch {
+        /* ignore */
+      }
+      closeDesignIntelligence(true);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.clearTimeout(focusTimer);
+      iframe?.removeEventListener('load', focusIframe);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showDesignIntelligence, chapterUrl, closeDesignIntelligence]);
 
   const { scrollXProgress } = useScroll({ container: containerRef });
   const [isLastPage, setIsLastPage] = useState(false);
 
   useMotionValueEvent(scrollXProgress, "change", (latest) => {
-    // With 9 pages, the last page starts around 8/9 = 0.88
-    setIsLastPage(latest > 0.9);
+    // With 10 pages, the last page starts around 9/10 = 0.9
+    setIsLastPage(latest > 0.92);
   });
   
   // Smooth scroll progress for the indicator
@@ -151,6 +314,17 @@ export default function App() {
       setIsDetailScrolled(false);
     }
   }, [activeProject]);
+
+  useEffect(() => {
+    if (!activeProject) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closePortfolioProject(true);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [activeProject, closePortfolioProject]);
 
   const handleScrollNext = () => {
     const container = containerRef.current;
@@ -258,7 +432,7 @@ export default function App() {
             >
               <CardItem translateZ={0.5} className="relative w-full h-full">
                 <img 
-                  src="/images/projects/portfolio-hero.webp" 
+                  src={asset('images/projects/portfolio-hero.webp')} 
                   alt="Portfolio" 
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => {
@@ -290,7 +464,7 @@ export default function App() {
             >
               <CardItem translateZ={0.5} className="absolute inset-0">
                 <img 
-                  src="/images/projects/portfolio-resume.webp" 
+                  src={asset('images/projects/portfolio-resume.webp')} 
                   alt="Resume" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
@@ -301,7 +475,52 @@ export default function App() {
           </CardContainer>
         </section>
 
-        {/* Section 3: Vercel (Interactive Project) */}
+        {/* Section 3: Design Intelligence */}
+        <section className="snap-section" id="design-intelligence">
+          <CardContainer>
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 180,
+                damping: 20,
+                delay: 0.2
+              }}
+              className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
+              onClick={openDesignIntelligence}
+              onMouseEnter={warmDesignIntelligence}
+              onFocus={warmDesignIntelligence}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <div className="relative w-full h-full">
+                <CardItem translateZ={0.5} className="absolute inset-0">
+                  <img
+                    src={asset('images/projects/design-intelligence-cover.webp')}
+                    alt="Design Intelligence 设计智能化"
+                    className="w-full h-full object-cover transition-transform duration-700"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                  />
+                </CardItem>
+
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-0 group-hover:delay-[600ms] flex flex-col justify-end p-12 text-white">
+                  <CardItem translateZ={2} className="max-w-[580px]">
+                    <h3 className="text-4xl font-bold tracking-tighter mb-4">Design Intelligence</h3>
+                    <p className="text-sm opacity-80 leading-relaxed">
+                      从用 AI 加速界面探索与产品交付，到为 AI 构建设计规范与可复用能力。
+                    </p>
+                    <div className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
+                      VIEW PROJECT <ArrowUpRight className="w-4 h-4" />
+                    </div>
+                  </CardItem>
+                </div>
+              </div>
+            </motion.div>
+          </CardContainer>
+        </section>
+
+        {/* Section 4: 科沃斯超级导购 */}
         <section className="snap-section">
           <CardContainer>
             <motion.div 
@@ -311,16 +530,16 @@ export default function App() {
                 type: "spring",
                 stiffness: 180,
                 damping: 20,
-                delay: 0.2
+                delay: 0.25
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('kovos-guide')}
+              onClick={() => openPortfolioProject('kovos-guide')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/kovos-guide-cover.webp" 
+                    src={asset('images/projects/kovos-guide-cover.webp')} 
                     alt="科沃斯超级导购" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -357,13 +576,13 @@ export default function App() {
                 delay: 0.3
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('kovos-agent')}
+              onClick={() => openPortfolioProject('kovos-agent')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/kovos-agent-cover.webp" 
+                    src={asset('images/projects/kovos-agent-cover.webp')} 
                     alt="辛顿智能体平台" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -399,13 +618,13 @@ export default function App() {
                 delay: 0.4
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('raycast')}
+              onClick={() => openPortfolioProject('raycast')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/self-service-cover.webp" 
+                    src={asset('images/projects/self-service-cover.webp')} 
                     alt="用户自助服务大厅" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -441,13 +660,13 @@ export default function App() {
                 delay: 0.5
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('writing')}
+              onClick={() => openPortfolioProject('writing')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/blabla-english-cover.webp" 
+                    src={asset('images/projects/blabla-english-cover.webp')} 
                     alt="彼言英语 BlaBla" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -483,13 +702,13 @@ export default function App() {
                 delay: 0.6
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('e-insight')}
+              onClick={() => openPortfolioProject('e-insight')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/e-insight-cover.webp" 
+                    src={asset('images/projects/e-insight-cover.webp')} 
                     alt="Connect" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -525,13 +744,13 @@ export default function App() {
                 delay: 0.7
               }}
               className="card-content bg-white !p-0 group cursor-pointer overflow-hidden aspect-video"
-              onClick={() => setActiveProject('xuanxing-uni')}
+              onClick={() => openPortfolioProject('xuanxing-uni')}
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/xuanxing-uni-cover.webp" 
+                    src={asset('images/projects/xuanxing-uni-cover.webp')} 
                     alt="About" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -572,7 +791,7 @@ export default function App() {
               <div className="relative w-full h-full">
                 <CardItem translateZ={0.5} className="absolute inset-0">
                   <img 
-                    src="/images/projects/portfolio-connect.webp" 
+                    src={asset('images/projects/portfolio-connect.webp')} 
                     alt="Connect" 
                     className="w-full h-full object-cover transition-transform duration-700"
                     referrerPolicy="no-referrer"
@@ -638,7 +857,7 @@ export default function App() {
                 {!isDetailScrolled ? (
                   <motion.button 
                     key="rect-back"
-                    onClick={() => setActiveProject(null)}
+                    onClick={() => closePortfolioProject(true)}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -651,7 +870,7 @@ export default function App() {
                 ) : (
                   <motion.button 
                     key="circle-back"
-                    onClick={() => setActiveProject(null)}
+                    onClick={() => closePortfolioProject(true)}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
@@ -712,6 +931,26 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Design Intelligence overlay — keep iframe mounted to avoid font reload flash */}
+      {diFrameMounted && (
+        <motion.div
+          initial={false}
+          animate={{ opacity: showDesignIntelligence ? 1 : 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-0 z-[200] bg-black"
+          style={{ pointerEvents: showDesignIntelligence ? 'auto' : 'none' }}
+          aria-hidden={!showDesignIntelligence}
+        >
+          <iframe
+            ref={diIframeRef}
+            title="Design Intelligence"
+            tabIndex={-1}
+            src={`${import.meta.env.BASE_URL}design-intelligence/design-intelligence-mockup.html#chapter`}
+            className="absolute inset-0 h-full w-full border-0 bg-black"
+          />
+        </motion.div>
+      )}
 
       {/* Custom Cursor / Interactive Element (Optional but adds to the feel) */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100]">

@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>03 权限申请体验优化 · Design Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./case-detail-shared.css">
+  <!-- 通用版式见 CASE_DETAIL_SPEC.md；本页仅保留案例专属内容 -->
+  <style>
+    /* —— Permission case exclusive —— */
+    .perm-pipe-lead {
+      margin-bottom: 18px;
+    }
+    .perm-cursor-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+    .perm-cursor-shot {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #1a1d24;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .perm-cursor-shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #12151c;
+    }
+    .perm-cursor-item {
+      margin: 0;
+      min-width: 0;
+    }
+    .perm-cursor-item figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .perm-cursor-item figcaption strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .perm-cursor-kicker {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+    .perm-cursor-kicker span {
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+    }
+    .perm-cursor-kicker strong {
+      font-family: var(--font-zh);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .perm-cursor-kicker em {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: normal;
+    }
+
+    /* Symbolic previews for 01 / 02 / 04 (aligned with PPT pipe-rich) */
+    .prv-pages {
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(120% 100% at 20% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+        linear-gradient(145deg, #fbfcfe, #e8ecf2);
+    }
+    .pages-stack {
+      position: relative;
+      width: 58%;
+      height: 78%;
+    }
+    .pages-stack .pg {
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      background: #fff;
+      border: 1px solid rgba(18, 20, 26, 0.08);
+      box-shadow: 0 6px 14px rgba(18, 20, 26, 0.08);
+      padding: 6px;
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      gap: 4px;
+    }
+    .pages-stack .pg-back {
+      transform: translate(5px, 4px) rotate(2deg);
+      background: #f1f3f7;
+    }
+    .pages-stack .pg-front .pg-rail {
+      border-radius: 2px;
+      background: #e6eaf0;
+    }
+    .pages-stack .pg-front .pg-main {
+      display: grid;
+      gap: 3px;
+      align-content: start;
+      padding-top: 2px;
+    }
+    .pages-stack .pg-front .pg-main i {
+      display: block;
+      height: 3px;
+      border-radius: 2px;
+      background: #dfe3ea;
+    }
+    .pages-stack .pg-front .pg-main i:nth-child(1) {
+      width: 55%;
+      height: 4px;
+      background: #c8d0dc;
+    }
+    .pages-stack .pg-front .pg-main i:nth-child(3) { width: 70%; }
+    .pages-stack .pg-front .pg-main i:nth-child(4) { width: 48%; }
+
+    .prv-tokens {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      background:
+        radial-gradient(120% 100% at 100% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 50%),
+        linear-gradient(160deg, #fbfcfe 0%, #e9eef4 100%);
+    }
+    .token-board {
+      width: 100%;
+      height: 100%;
+      padding: 6px 8px 8px;
+      border-radius: 7px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(18, 20, 26, 0.07);
+      box-shadow: 0 6px 14px rgba(18, 20, 26, 0.07);
+      display: grid;
+      gap: 5px;
+      align-content: center;
+    }
+    .token-swatches {
+      display: flex;
+      gap: 5px;
+    }
+    .token-swatches i {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(18, 20, 26, 0.08);
+    }
+    .token-swatches i:nth-child(1) { background: var(--accent); }
+    .token-swatches i:nth-child(2) { background: color-mix(in srgb, var(--accent) 35%, white); }
+    .token-swatches i:nth-child(3) { background: #e8ebf0; }
+    .token-swatches i:nth-child(4) { background: #1f2937; }
+    .token-board .tok-title {
+      align-self: flex-start;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: -2px;
+      margin-bottom: 2px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+    .token-board .tok-line {
+      height: 5px;
+      border-radius: 3px;
+      background: #e4e8ef;
+    }
+    .token-board .tok-line.short { width: 62%; }
+
+    .prv-pack {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      background:
+        radial-gradient(120% 100% at 0% 100%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%),
+        linear-gradient(145deg, #fbfcfe, #e8ecf2);
+    }
+    .pack-board {
+      width: 100%;
+      height: 100%;
+      padding: 8px 9px;
+      border-radius: 7px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(18, 20, 26, 0.07);
+      box-shadow: 0 6px 14px rgba(18, 20, 26, 0.07);
+      display: grid;
+      gap: 4px;
+      align-content: center;
+      font-family: var(--font-ui);
+    }
+    .pack-board .pack-tag {
+      align-self: flex-start;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: color-mix(in srgb, var(--accent) 14%, white);
+      color: var(--accent);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+    .pack-board .pack-line {
+      height: 3px;
+      border-radius: 2px;
+      background: #e1e5ec;
+    }
+    .pack-board .pack-line.mid { width: 78%; }
+    .pack-board .pack-line.short { width: 52%; }
+    .pack-board .pack-line.on {
+      background: color-mix(in srgb, var(--accent) 28%, #e1e5ec);
+      width: 70%;
+    }
+
+    .prv-cursor {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      background:
+        radial-gradient(120% 100% at 80% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+        linear-gradient(160deg, #1a1d24 0%, #101319 100%);
+    }
+    .cursor-board {
+      width: 100%;
+      height: 100%;
+      border-radius: 7px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+      background: #0f1218;
+      box-shadow: 0 8px 16px rgba(0,0,0,.28);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+    .cursor-board-top {
+      display: flex;
+      gap: 4px;
+      padding: 6px 8px;
+      background: #161a22;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .cursor-board-top i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #3a4150;
+    }
+    .cursor-board-top i:nth-child(1) { background: #ff5f57; }
+    .cursor-board-top i:nth-child(2) { background: #febc2e; }
+    .cursor-board-top i:nth-child(3) { background: #28c840; }
+    .cursor-board-body {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 5px;
+      padding: 6px;
+    }
+    .cursor-board-body > span {
+      border-radius: 2px;
+      background: rgba(255,255,255,.06);
+    }
+    .cursor-board-body > div {
+      border-radius: 3px;
+      background: #f4f6f9;
+      padding: 5px;
+      display: grid;
+      gap: 3px;
+      align-content: start;
+    }
+    .cursor-board-body > div b {
+      display: block;
+      height: 3px;
+      border-radius: 2px;
+      background: #d5dae3;
+    }
+    .cursor-board-body > div b.short { width: 55%; }
+
+    .perm-cursor-shot .frame-fill {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(160deg, #232833 0%, #15181f 55%, #101319 100%);
+    }
+    .perm-cursor-fake {
+      width: 88%;
+      max-width: 520px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: #0f1218;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    }
+    .perm-cursor-fake-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #161a22;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .perm-cursor-fake-top span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3a4150;
+    }
+    .perm-cursor-fake-top span:nth-child(1) { background: #ff5f57; }
+    .perm-cursor-fake-top span:nth-child(2) { background: #febc2e; }
+    .perm-cursor-fake-top span:nth-child(3) { background: #28c840; }
+    .perm-cursor-fake-body {
+      display: grid;
+      grid-template-columns: 72px 1fr 1.1fr;
+      min-height: 180px;
+    }
+    .perm-cursor-fake-rail {
+      background: #12151c;
+      border-right: 1px solid rgba(255,255,255,.05);
+      padding: 10px 8px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .perm-cursor-fake-rail i {
+      display: block;
+      height: 8px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.08);
+    }
+    .perm-cursor-fake-chat {
+      padding: 10px;
+      border-right: 1px solid rgba(255,255,255,.05);
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .perm-cursor-fake-chat i {
+      display: block;
+      height: 7px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.1);
+    }
+    .perm-cursor-fake-chat i.accent {
+      width: 70%;
+      background: color-mix(in srgb, var(--accent) 55%, #2a3340);
+    }
+    .perm-cursor-fake-preview {
+      padding: 10px;
+      background: #f4f6f9;
+    }
+    .perm-cursor-fake-preview .mini-ui {
+      height: 100%;
+      min-height: 140px;
+      border-radius: 6px;
+      border: 1px solid #dde3ec;
+      background: #fff;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+    .perm-cursor-fake-preview .mini-ui b {
+      height: 8px;
+      width: 42%;
+      border-radius: 2px;
+      background: #c9d1de;
+    }
+    .perm-cursor-fake-preview .mini-ui i {
+      display: block;
+      height: 6px;
+      border-radius: 2px;
+      background: #e4e9f0;
+    }
+
+    .perm-step-badge {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      z-index: 2;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(18, 20, 26, 0.78);
+      color: #fff;
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .perm-mock-root {
+      --mock-blue: #3877f5;
+      --mock-bg: #f0f2f5;
+      --mock-panel: #fff;
+      --mock-line: #e5e8ef;
+      --mock-text: #1f2937;
+      --mock-muted: #6b7280;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--mock-text);
+      background: var(--mock-bg);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .perm-mock-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: #e8eaef;
+      border-bottom: 1px solid var(--mock-line);
+    }
+    .perm-mock-chrome i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c5cad3;
+    }
+    .perm-mock-chrome i:nth-child(1) { background: #ff5f57; }
+    .perm-mock-chrome i:nth-child(2) { background: #febc2e; }
+    .perm-mock-chrome i:nth-child(3) { background: #28c840; }
+    .perm-mock-url {
+      margin-left: 6px;
+      flex: 1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #fff;
+      border: 1px solid var(--mock-line);
+      color: var(--mock-muted);
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .perm-mock-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      min-height: 220px;
+    }
+    .perm-mock-side {
+      background: #1f2937;
+      padding: 10px 8px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .perm-mock-side span {
+      display: block;
+      height: 6px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.18);
+    }
+    .perm-mock-side span.on {
+      background: var(--mock-blue);
+      opacity: 0.9;
+    }
+    .perm-mock-main {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .perm-mock-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .perm-mock-title b {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .perm-mock-steps {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .perm-mock-steps button {
+      appearance: none;
+      border: 1px solid var(--mock-line);
+      background: #fff;
+      color: var(--mock-muted);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border-color .25s ease, color .25s ease, background .25s ease, transform .25s ease;
+    }
+    .perm-mock-steps button.is-active {
+      border-color: color-mix(in srgb, var(--mock-blue) 45%, var(--mock-line));
+      color: var(--mock-blue);
+      background: color-mix(in srgb, var(--mock-blue) 8%, #fff);
+    }
+    .perm-mock-panel {
+      flex: 1;
+      min-height: 140px;
+      border-radius: 8px;
+      border: 1px solid var(--mock-line);
+      background: var(--mock-panel);
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .perm-mock-view { display: none; height: 100%; }
+    .perm-mock-view.is-on { display: block; animation: perm-fade-up .28s ease; }
+    @keyframes perm-fade-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .perm-sys-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .perm-sys-card {
+      appearance: none;
+      text-align: left;
+      border: 1px solid var(--mock-line);
+      background: #fafbfc;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease, background .25s ease;
+    }
+    .perm-sys-card strong {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .perm-sys-card em {
+      display: block;
+      font-style: normal;
+      font-size: 10px;
+      color: var(--mock-muted);
+      line-height: 1.4;
+    }
+    .perm-sys-card.is-selected {
+      border-color: var(--mock-blue);
+      background: color-mix(in srgb, var(--mock-blue) 6%, #fff);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--mock-blue) 18%, transparent);
+      transform: scale(1.02);
+    }
+    .perm-mock-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .perm-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .perm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .perm-btn-ghost {
+      background: #fff;
+      border: 1px solid var(--mock-line);
+      color: var(--mock-text);
+    }
+    .perm-btn-primary {
+      background: var(--mock-blue);
+      color: #fff;
+    }
+    .perm-btn.is-loading {
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    .perm-drawer-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      height: 100%;
+      position: relative;
+    }
+    .perm-drawer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .28s ease;
+    }
+    .perm-mock-root[data-drawer="open"] .perm-drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .perm-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(92%, 340px);
+      background: #fff;
+      border-left: 1px solid var(--mock-line);
+      box-shadow: -12px 0 28px rgba(15, 23, 42, 0.1);
+      transform: translateX(104%);
+      transition: transform .3s cubic-bezier(0.22, 1, 0.36, 1);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      z-index: 2;
+    }
+    .perm-mock-root[data-drawer="open"] .perm-drawer {
+      transform: translateX(0);
+    }
+    .perm-drawer-hd {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--mock-line);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .perm-drawer-cols {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .perm-drawer-col {
+      padding: 8px;
+      border-right: 1px solid var(--mock-line);
+      overflow: auto;
+    }
+    .perm-drawer-col:last-child { border-right: 0; }
+    .perm-drawer-col b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 10px;
+      color: var(--mock-blue);
+      letter-spacing: 0.2px;
+    }
+    .perm-check {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 10px;
+      color: var(--mock-text);
+      cursor: pointer;
+      user-select: none;
+    }
+    .perm-check input { accent-color: var(--mock-blue); }
+    .perm-check.is-owned { color: var(--mock-muted); }
+    .perm-check.is-owned::after {
+      content: "已有";
+      margin-left: auto;
+      font-size: 9px;
+      color: #9aa3b2;
+    }
+    .perm-drawer-ft {
+      padding: 8px 10px;
+      border-top: 1px solid var(--mock-line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .perm-reason {
+      margin-top: 8px;
+      font-size: 10px;
+      color: var(--mock-muted);
+    }
+    .perm-reason textarea {
+      width: 100%;
+      margin-top: 4px;
+      min-height: 44px;
+      resize: none;
+      border: 1px solid var(--mock-line);
+      border-radius: 6px;
+      padding: 6px;
+      font: inherit;
+      color: var(--mock-text);
+      background: #fafbfc;
+    }
+
+    .perm-success {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 16px;
+    }
+    .perm-success-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: color-mix(in srgb, #22c55e 18%, #fff);
+      color: #16a34a;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .perm-success strong { font-size: 14px; }
+    .perm-success p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--mock-muted);
+      line-height: 1.5;
+      max-width: 28em;
+    }
+    .perm-toast {
+      position: absolute;
+      left: 50%;
+      top: 12px;
+      transform: translateX(-50%) translateY(-8px);
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(17, 24, 39, 0.92);
+      color: #fff;
+      font-size: 11px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 5;
+      white-space: nowrap;
+    }
+    .perm-toast.is-on {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .perm-stage {
+      container-type: inline-size;
+      container-name: perm-stage;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .perm-stage .callouts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 0 1 200px;
+      width: 200px;
+      max-width: 200px;
+      min-width: 0;
+      align-self: flex-start;
+      min-height: 0;
+      order: 1;
+    }
+    .perm-stage .callout[hidden] {
+      display: none !important;
+    }
+    .perm-stage .callout {
+      padding: 14px 14px;
+    }
+    .perm-stage .callout strong {
+      font-size: 14px;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+    .perm-stage .callout span {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .perm-stage-mock {
+      order: 2;
+      flex: 1 1 560px;
+      width: auto;
+      min-width: min(100%, 560px);
+      max-width: 100%;
+      height: auto;
+      min-height: 0;
+      max-height: none;
+      aspect-ratio: 16 / 9;
+      align-self: flex-start;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    /* 侧栏 + 间距 + Mock 最小宽约 776px：不够则改为上下排布，Mock 完整占满行宽并保持 16:9 */
+    @container perm-stage (max-width: 800px) {
+      .perm-stage-mock {
+        order: 1;
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+      }
+      .perm-stage .callouts {
+        order: 2;
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: none;
+        height: auto !important;
+      }
+    }
+    .perm-stage-chrome {
+      flex: 0 0 auto;
+      height: 42px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(180deg, #3a3a3c, #2c2c2e);
+      border-bottom: 1px solid #1a1a1c;
+    }
+    .perm-stage-chrome > span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #5c5c5e;
+    }
+    .perm-stage-chrome > span:nth-child(1) { background: #ff5f57; }
+    .perm-stage-chrome > span:nth-child(2) { background: #febc2e; }
+    .perm-stage-chrome > span:nth-child(3) { background: #28c840; }
+    .perm-stage-url {
+      flex: 1;
+      height: 26px;
+      line-height: 26px;
+      margin-left: 4px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid #1f1f21;
+      background: #1c1c1e;
+      color: #a1a1a6;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .perm-stage-viewport {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: #f5f7fa;
+    }
+    .perm-stage-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 111.111%;
+      height: 111.111%;
+      border: 0;
+      background: #fff;
+      transform: scale(0.9);
+      transform-origin: top left;
+    }
+    .perm-stage-hint {
+      margin: auto 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 0 2px;
+      color: var(--accent);
+      font-family: var(--font-zh);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .perm-stage-hint-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .perm-stage-hint em {
+      position: relative;
+      flex: 0 0 auto;
+      font-style: normal;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 5px;
+      padding: 5px 9px;
+      line-height: 1.2;
+      animation: perm-live-pulse 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    }
+    .perm-stage-hint em::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+      animation: perm-live-ring 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+      pointer-events: none;
+    }
+    .perm-stage-hint-arrow {
+      display: inline-flex;
+      color: var(--accent);
+      font-style: normal;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      animation: perm-hint-nudge 1.15s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    }
+    @keyframes perm-live-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    @keyframes perm-live-ring {
+      0% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
+      }
+      70%, 100% {
+        opacity: 0;
+        box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 0%, transparent);
+      }
+    }
+    @keyframes perm-hint-nudge {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .perm-stage-hint em,
+      .perm-stage-hint em::after,
+      .perm-stage-hint-arrow {
+        animation: none;
+      }
+    }
+
+    .perm-tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border-radius: 8px;
+      background: #e8ebf0;
+    }
+    .perm-tabs button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--mock-muted);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .perm-tabs button.is-active {
+      background: #fff;
+      color: var(--mock-text);
+      box-shadow: 0 1px 2px rgba(15,23,42,.08);
+    }
+    .perm-history-list {
+      display: grid;
+      gap: 8px;
+    }
+    .perm-history-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--mock-line);
+      border-radius: 8px;
+      background: #fafbfc;
+      font-size: 11px;
+    }
+    .perm-history-row strong { display: block; margin-bottom: 2px; }
+    .perm-history-row em {
+      font-style: normal;
+      color: var(--mock-muted);
+      font-size: 10px;
+    }
+    .perm-status {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .perm-status.draft { background: #f3f4f6; color: #6b7280; }
+    .perm-status.pending { background: #eff6ff; color: #2563eb; }
+    .perm-status.done { background: #ecfdf5; color: #059669; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .perm-mock-view.is-on,
+      .perm-sys-card,
+      .perm-drawer,
+      .perm-drawer-backdrop,
+      .perm-toast,
+      .perm-mock-steps button {
+        animation: none !important;
+        transition: none !important;
+      }
+      .perm-sys-card.is-selected { transform: none; }
+    }
+
+    @media (max-width: 980px) {
+      .perm-cursor-stage {
+        grid-template-columns: 1fr;
+      }
+      .perm-stage .callouts {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: none;
+        height: auto !important;
+        order: 2;
+      }
+      .perm-stage-mock {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        order: 1;
+      }
+    }
+  </style>
+</head>
+<body data-accent="cyan">
+  <article class="case-page">
+    <div class="case-top">
+      <header class="case-nav">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK</a>
+        <div class="case-nav-meta">03 <span>/</span> 04</div>
+      </header>
+
+      <header class="case-hero case-hero-with-aside">
+        <div class="case-hero-copy">
+          <span class="case-hero-mark" aria-hidden="true">03</span>
+          <p class="case-kicker">03 / PROJECT</p>
+          <h1 class="case-title">权限申请体验优化</h1>
+          <p class="case-lead">切入现有系统中的功能，利用AI 完成需求与可交互交付，<br>快速完成像素级还原上线。</p>
+        </div>
+
+        <aside
+          class="login-hero-flow"
+          aria-label="工作流摘要"
+          style="--login-hero-flow-mr:44px;--login-hero-flow-mt:18px;width:min(100%,300px)"
+        >
+          <span class="login-hero-flow-kicker">WORKFLOW</span>
+          <ol class="login-hero-flow-steps">
+            <li>现有页整理</li>
+            <li>提炼 UI 规范</li>
+            <li>Cursor Mock</li>
+            <li>交付</li>
+          </ol>
+          <p>从存量系统到可集成代码包</p>
+        </aside>
+      </header>
+    </div>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>从存量功能到可交互交付</h2>
+        <p>先整理现有页与规范；在 Cursor 里通过对话沉淀新需求、并用 Mock 数据把流程跑通，最后打成开发可接手的代码包。</p>
+      </div>
+
+      <div class="pipeline pipeline-rich perm-pipe-lead" aria-label="工作流步骤总览">
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>01</span>
+            <strong>现有页整理</strong>
+            <em>存量页面与规则</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-pages">
+              <div class="pages-stack">
+                <div class="pg pg-back"></div>
+                <div class="pg pg-front">
+                  <div class="pg-rail"></div>
+                  <div class="pg-main"><i></i><i></i><i></i><i></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>02</span>
+            <strong>提炼 UI 规范</strong>
+            <em>组件与视觉规则</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-tokens">
+              <div class="token-board">
+                <div class="tok-title">Design.md</div>
+                <div class="token-swatches"><i></i><i></i><i></i><i></i></div>
+                <div class="tok-line"></div>
+                <div class="tok-line short"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>03</span>
+            <strong>Cursor Mock</strong>
+            <em>对话定需求 · 可交互</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-cursor">
+              <div class="cursor-board">
+                <div class="cursor-board-top"><i></i><i></i><i></i></div>
+                <div class="cursor-board-body">
+                  <span></span>
+                  <div>
+                    <b></b><b></b><b class="short"></b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>04</span>
+            <strong>交付包</strong>
+            <em>需求文档 + 可运行工程</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-pack">
+              <div class="pack-board">
+                <div class="pack-tag">Code.zip</div>
+                <div class="pack-line on"></div>
+                <div class="pack-line"></div>
+                <div class="pack-line mid"></div>
+                <div class="pack-line short"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="perm-cursor-kicker">
+        <span>FOCUS · 03</span>
+        <strong>Cursor · Vibe Coding</strong>
+        <em>对话沉淀新需求，并在真实代码里推进可交互页面</em>
+      </div>
+
+      <div class="perm-cursor-stage" aria-label="Cursor vibe coding 主视觉">
+        <figure class="perm-cursor-item">
+          <div class="perm-cursor-shot">
+            <img
+              src="./case-assets/permission/cursor-ide-1.jpg"
+              alt="Cursor 中对话确认权限申请功能范围，并预览可交互申请页"
+              width="1600"
+              height="900"
+              loading="lazy"
+            >
+            <span class="perm-step-badge">01 · 对话定需求</span>
+          </div>
+          <figcaption>
+            <strong>对话沉淀需求</strong> —
+            在 Cursor 里确认范围与流程，同步跑通可交互预览。
+          </figcaption>
+        </figure>
+
+        <figure class="perm-cursor-item">
+          <div class="perm-cursor-shot">
+            <img
+              src="./case-assets/permission/cursor-ide-2.jpg"
+              alt="Cursor 中对照需求文档与页面源码继续打磨"
+              width="1600"
+              height="900"
+              loading="lazy"
+            >
+            <span class="perm-step-badge">02 · 写出可交互页</span>
+          </div>
+          <figcaption>
+            <strong>代码与文档同屏</strong> —
+            边写实现边对齐需求文档，打磨可交付细节。
+          </figcaption>
+        </figure>
+      </div>
+
+      <aside class="principle-panel principle-panel-below" aria-label="工作流说明">
+        <div class="principle-head">
+          <span>HOW IT WORKS</span>
+        </div>
+        <div class="principle-layers">
+          <div class="principle-layer">
+            <div class="principle-tag">Vibe coding</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>Cursor 对话</i><b>→</b><i>新需求</i><b>→</b><i>可运行 Mock</i>
+            </div>
+            <p>新版需求不是事先写死再开发，而是在 Cursor 对话里边做边定；同屏预览保证需求可验证。</p>
+          </div>
+          <div class="principle-layer">
+            <div class="principle-tag">可验证体验</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>Mock 数据</i><b>→</b><i>可点流程</i><b>→</b><i>交付包</i>
+            </div>
+            <p>用接近生产的数据预演申请路径，把细节打磨完再交给开发做像素级还原。</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>在可点的 Mock 里打磨真实申请体验</h2>
+        <p>用接近生产的数据和流程预演申请路径，把分层权限、草稿与历史一次验证清楚，再交给开发还原。</p>
+      </div>
+
+      <div class="perm-stage">
+        <div class="callouts" id="perm-callouts">
+          <div class="callout" data-feat="1">
+            <strong>两步申请</strong>
+            <span>先选系统，再配权限与原因；原第三步已合并进第二步。</span>
+          </div>
+          <div class="callout" data-feat="3">
+            <strong>批量添加申请人</strong>
+            <span>支持搜索选人，也可逗号粘贴工号一键「全部添加」。</span>
+          </div>
+          <div class="callout" data-feat="4">
+            <strong>角色带权</strong>
+            <span>勾选角色后自动带入功能权限，并锁定为角色权限样式。</span>
+          </div>
+          <div class="callout" data-feat="6">
+            <strong>数据权限范围</strong>
+            <span>对需配数据权限的功能，用组织树多选补齐数据边界。</span>
+          </div>
+          <div class="callout" data-feat="7">
+            <strong>复制他人权限</strong>
+            <span>一键带入他人系统、功能与数据权限，再按需调整。</span>
+          </div>
+          <div class="callout" data-feat="8">
+            <strong>抽屉内三栏选权</strong>
+            <span>左角色 / 中功能 / 右数据权限，在宽抽屉里一次配完。</span>
+          </div>
+          <div class="callout" data-feat="11">
+            <strong>提交后可追踪</strong>
+            <span>提交进 ITSM 审批；历史可查状态、明细与操作日志。</span>
+          </div>
+          <p class="perm-stage-hint">
+            <span class="perm-stage-hint-label">
+              <em>Live Mock</em>
+              <i class="perm-stage-hint-arrow" aria-hidden="true">→</i>
+            </span>
+            <span>此窗口模拟真实管理台环境，可直接点击操作，完整体验申请流程。</span>
+          </p>
+        </div>
+
+        <div class="perm-stage-mock">
+          <div class="perm-stage-chrome" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <div class="perm-stage-url">permission-admin / apply</div>
+          </div>
+          <div class="perm-stage-viewport">
+            <iframe
+              class="perm-stage-frame"
+              src="./permission-apply/permission-preview.html"
+              title="权限申请完整可交互预览"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-block case-block-last">
+      <div class="case-block-copy">
+        <h2>交给开发的不是效果图，是可集成包</h2>
+        <p>需求、可运行参考工程与集成说明对齐，视觉与交互以 Mock 工程为准，减少还原损耗。</p>
+      </div>
+      <div class="deliver-trio">
+        <div class="doc-card">
+          <div class="tag">SPEC / PRD</div>
+          <strong>需求文档</strong>
+          <p>业务流程、校验、状态与验收范围的完整说明。</p>
+        </div>
+        <div class="doc-card">
+          <div class="tag">RUNNABLE</div>
+          <strong>Mock 可运行工程</strong>
+          <p>Vue3 参考工程。本地 npm install && npm run dev 后可 1:1 预览交互。</p>
+        </div>
+        <div class="doc-card">
+          <div class="tag">DELIVERY</div>
+          <strong>交付说明</strong>
+          <p>文档与代码对照、集成建议与验收路径。</p>
+        </div>
+      </div>
+      <div class="file-tree" style="margin-top:18px" aria-label="交付包目录">
+        <div class="skill-tree-body">
+          <div class="skill-tree-row is-root"><code>权限申请功能交付/</code></div>
+          <div class="skill-tree-row"><code>├─ 需求文档-权限申请与申请历史.md</code><span>← 产品需求说明书</span></div>
+          <div class="skill-tree-row"><code>├─ README-交付说明.md</code><span>← 交付说明书，如何运行与集成</span></div>
+          <div class="skill-tree-row"><code>├─ permission-admin/</code><span>← Vue3 完整可运行参考工程（含 Mock）</span></div>
+          <div class="skill-tree-row"><code>└─ apply-feature-src/</code><span>← 仅申请相关源码摘录，便于对照迁入主工程</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div
+      class="case-bottom"
+      style="--case-bottom-pad-top:100px;--case-bottom-pad-bottom:12px;--case-footer-shift:-32px"
+    >
+      <footer class="case-page-footer">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK TO CASES</a>
+        <span>03 权限申请体验优化</span>
+      </footer>
+    </div>
+  </article>
+  <script>
+    (function () {
+      var TIERS = [
+        [1, 3, 4, 6, 7, 8, 11],
+        [1, 3, 4, 6, 7, 8],
+        [1, 3, 4, 6, 8],
+        [1, 3, 4, 8],
+        [1, 3, 4]
+      ];
+      var root = document.getElementById("perm-callouts");
+      var stage = root && root.closest(".perm-stage");
+      var mock = stage && stage.querySelector(".perm-stage-mock");
+      if (!root || !mock) return;
+
+      var cards = Array.prototype.slice.call(root.querySelectorAll(".callout[data-feat]"));
+      var hint = root.querySelector(".perm-stage-hint");
+      var gap = 10;
+      var raf = 0;
+
+      function applyTier(tier) {
+        var set = {};
+        for (var i = 0; i < tier.length; i++) set[tier[i]] = true;
+        for (var j = 0; j < cards.length; j++) {
+          var id = Number(cards[j].getAttribute("data-feat"));
+          cards[j].hidden = !set[id];
+        }
+      }
+
+      function measureUsed() {
+        var used = hint ? hint.offsetHeight : 0;
+        var visible = 0;
+        for (var i = 0; i < cards.length; i++) {
+          if (cards[i].hidden) continue;
+          used += cards[i].offsetHeight;
+          visible += 1;
+        }
+        if (visible > 0) used += gap * visible;
+        return used;
+      }
+
+      function isSideBySide() {
+        return Math.abs(mock.offsetTop - root.offsetTop) < 12;
+      }
+
+      function fit() {
+        if (!isSideBySide()) {
+          root.style.height = "";
+          applyTier(TIERS[0]);
+          return;
+        }
+        var available = mock.offsetHeight;
+        if (available <= 0) return;
+        root.style.height = available + "px";
+        for (var t = 0; t < TIERS.length; t++) {
+          applyTier(TIERS[t]);
+          if (measureUsed() <= available + 1 || t === TIERS.length - 1) return;
+        }
+      }
+
+      function schedule() {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          fit();
+        });
+      }
+
+      if (typeof ResizeObserver !== "undefined") {
+        var ro = new ResizeObserver(schedule);
+        ro.observe(mock);
+        ro.observe(stage);
+      } else {
+        window.addEventListener("resize", schedule);
+      }
+      schedule();
+    })();
+  </script>
+  <script src="./page-transition.js" defer></script>
+</body>
+</html>

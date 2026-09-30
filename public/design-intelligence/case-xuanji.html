@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>04 玄玑平台 Spec 与用户指南 · Design Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
+  <link rel="stylesheet" href="./case-detail-shared.css">
+  <!-- 通用版式见 CASE_DETAIL_SPEC.md；本页仅保留案例专属内容 -->
+  <style>
+    /* —— 04 玄玑专属 · 三部叙事 —— */
+    .xj-hero-duo {
+      align-self: center;
+      width: min(100%, 260px);
+      margin: 12px 68px 0 0;
+      padding: 10px 0 10px 16px;
+      border-left: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+      opacity: 0.58;
+    }
+    .xj-hero-duo-item + .xj-hero-duo-item {
+      margin-top: 12px;
+    }
+    .xj-hero-duo-item strong {
+      display: block;
+      margin-bottom: 3px;
+      font-family: var(--font-zh);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    .xj-hero-duo-item span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--subtle);
+    }
+
+    /* ① 玄玑是什么 · 口号与正文定义之间 +12px */
+    .case-block-copy p.xj-intro-lead {
+      margin-bottom: 40px;
+    }
+    .xj-intro-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: clamp(16px, 2.5vw, 28px);
+    }
+    .xj-intro-left {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      flex: 36 1 0;
+      min-width: 0;
+      max-width: 500px;
+      width: auto;
+      padding-top: 0;
+    }
+    .xj-intro-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0;
+      width: 100%;
+    }
+    .xj-intro-def {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(15px, 1.35vw, 17px);
+      line-height: 1.75;
+      max-width: none;
+    }
+    .xj-intro-def strong { font-weight: 700; }
+    .xj-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+    }
+    .xj-flow span {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .xj-flow i {
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .xj-workspace {
+      margin: 0;
+      flex: 64 1 0;
+      min-width: 0;
+      width: auto;
+      align-self: center;
+    }
+    .xj-workspace-frame {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      line-height: 0;
+    }
+    .xj-workspace-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f4f6f9;
+      line-height: normal;
+    }
+    .xj-workspace-chrome b {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d0d7e2;
+    }
+    .xj-workspace-chrome b:nth-child(1) { background: #ff5f57; }
+    .xj-workspace-chrome b:nth-child(2) { background: #febc2e; }
+    .xj-workspace-chrome b:nth-child(3) { background: #28c840; }
+    .xj-workspace-chrome em {
+      margin-left: 8px;
+      color: var(--subtle);
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .xj-workspace-shot {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+
+    .xj-triad {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+    .xj-triad-card {
+      padding: 10px 14px 13px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .xj-triad-card .tag {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .xj-triad-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--font-zh);
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .xj-triad-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ② 为什么 Spec + Spec 里有什么 */
+    .xj-why {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 34px;
+    }
+    .xj-why-card {
+      position: relative;
+      padding: 28px 24px 26px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px 20px;
+      align-items: center;
+    }
+    .xj-why-card .xj-why-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+    .xj-why-art {
+      width: 112px;
+      height: 96px;
+      flex-shrink: 0;
+      position: relative;
+      opacity: 0.72;
+    }
+    .xj-why-art svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .xj-why-art .messy-card {
+      fill: #f1f2f4;
+      stroke: #c5cad3;
+    }
+    .xj-why-art .messy-line {
+      stroke: #d5d9e0;
+    }
+    .xj-why-card.good .xj-why-art .tidy-card {
+      fill: color-mix(in srgb, var(--accent) 5%, #fff);
+      stroke: color-mix(in srgb, var(--accent) 35%, #c5c9d4);
+    }
+    .xj-why-card.good .xj-why-art .tidy-line {
+      stroke: color-mix(in srgb, var(--accent) 30%, #c5c9d4);
+      opacity: 0.7;
+    }
+    .xj-why-card.bad {
+      background: linear-gradient(160deg, #f3f4f6 0%, #fafbfc 55%);
+      border-color: #d5d8de;
+      border-style: dashed;
+      box-shadow: none;
+      opacity: 0.95;
+    }
+    .xj-why-card.good {
+      border: 2px solid color-mix(in srgb, var(--accent) 55%, #c5c9d4);
+      background:
+        linear-gradient(160deg, color-mix(in srgb, var(--accent) 12%, #fff) 0%, #fff 55%);
+      box-shadow:
+        0 12px 28px color-mix(in srgb, var(--accent) 16%, transparent),
+        0 2px 6px rgba(30, 41, 59, 0.06);
+      transform: scale(1.03);
+      z-index: 1;
+    }
+    .xj-why-card em {
+      display: inline-flex;
+      align-self: flex-start;
+      margin: 0;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .xj-why-card.bad em {
+      color: #6b7280;
+      background: #e5e7eb;
+    }
+    .xj-why-card.good em {
+      color: #fff;
+      background: var(--accent);
+    }
+    .xj-why-card strong {
+      display: block;
+      font-family: var(--font-zh);
+      font-size: clamp(17px, 1.6vw, 20px);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+      margin: 0;
+    }
+    .xj-why-card.bad strong {
+      color: #6b7280;
+    }
+    .xj-why-card.good strong {
+      color: var(--ink);
+    }
+    .xj-why-card p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .xj-why-card.bad p {
+      color: #8b919c;
+    }
+    .xj-why-card.good p {
+      color: var(--ink);
+    }
+    .xj-why-gap {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 0 4px;
+      color: var(--accent);
+      font-weight: 700;
+      user-select: none;
+    }
+    .xj-why-gap .arr {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .xj-why-gap span {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--subtle);
+    }
+
+    .xj-spec-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .xj-spec-showcase-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .xj-spec-showcase-head strong {
+      font-family: var(--font-zh);
+      font-size: clamp(18px, 1.8vw, 22px);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .xj-spec-showcase-head em {
+      font-style: normal;
+      font-size: 12px;
+      color: var(--subtle);
+      font-weight: 600;
+    }
+    .xj-spec-pair {
+      display: grid;
+      grid-template-columns: 7fr 3fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .xj-spec-browser,
+    .xj-spec-finder {
+      margin: 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .xj-spec-browser {
+      height: fit-content;
+      align-self: start;
+    }
+    .xj-spec-finder {
+      /* 不参与撑高行高，高度跟左侧截图对齐，超出裁切 */
+      height: 0;
+      min-height: 100%;
+      align-self: stretch;
+      container-type: inline-size;
+      container-name: finder;
+    }
+    .xj-spec-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f4f6f9;
+      flex-shrink: 0;
+    }
+    .xj-spec-chrome b {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d0d7e2;
+    }
+    .xj-spec-chrome b:nth-child(1) { background: #ff5f57; }
+    .xj-spec-chrome b:nth-child(2) { background: #febc2e; }
+    .xj-spec-chrome b:nth-child(3) { background: #28c840; }
+    .xj-spec-chrome em {
+      margin-left: 8px;
+      color: var(--subtle);
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .xj-spec-browser img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+
+    /* macOS Finder · light */
+    .xj-finder-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 40px;
+      padding: 0 12px;
+      border-bottom: 1px solid #e5e5e5;
+      background: linear-gradient(180deg, #f6f6f6, #ececec);
+      flex-shrink: 0;
+    }
+    .xj-finder-traffic {
+      display: flex;
+      gap: 6px;
+      margin-right: 4px;
+    }
+    .xj-finder-traffic i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: block;
+    }
+    .xj-finder-traffic i:nth-child(1) { background: #ff5f57; }
+    .xj-finder-traffic i:nth-child(2) { background: #febc2e; }
+    .xj-finder-traffic i:nth-child(3) { background: #28c840; }
+    .xj-finder-nav {
+      display: flex;
+      gap: 2px;
+    }
+    .xj-finder-nav span {
+      width: 22px;
+      height: 20px;
+      border-radius: 4px;
+      background: #e4e4e4;
+      border: 1px solid #d0d0d0;
+      color: #888;
+      font-size: 10px;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+    }
+    .xj-finder-path {
+      flex: 1;
+      min-width: 0;
+      height: 22px;
+      border-radius: 5px;
+      border: 1px solid #d4d4d4;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 11px;
+      color: #555;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .xj-finder-body {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      flex: 1;
+      min-height: 0;
+      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+      overflow: hidden;
+    }
+    .xj-finder-side {
+      padding: 8px 4px;
+      background: #f5f5f7;
+      border-right: 1px solid #e6e6e6;
+      font-size: 10px;
+      color: #666;
+    }
+    .xj-finder-side .sec {
+      margin: 0 0 4px;
+      padding: 0 6px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #999;
+      letter-spacing: 0.04em;
+    }
+    .xj-finder-side .item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      margin-bottom: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .xj-finder-side .item.is-on {
+      background: color-mix(in srgb, var(--accent) 16%, #e8e8ed);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .xj-finder-side .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: #7aa2f7;
+      flex-shrink: 0;
+    }
+    .xj-finder-list {
+      padding: 0;
+      overflow: hidden;
+      min-height: 0;
+      background: #fff;
+    }
+    .xj-finder-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      height: 30px;
+      box-sizing: border-box;
+      padding: 0 12px;
+      font-size: 12px;
+      color: #1d1d1f;
+      line-height: 1.3;
+      background: #fff;
+    }
+    .xj-finder-list > .xj-finder-row:nth-child(even) {
+      background: #f5f5f7;
+    }
+    .xj-finder-row > span:nth-child(2) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .xj-finder-row:hover {
+      background: #e8e8ed;
+    }
+    .xj-finder-list > .xj-finder-row:nth-child(even):hover {
+      background: #e8e8ed;
+    }
+    .xj-finder-row.is-folder {
+      font-weight: 600;
+      margin-top: 0;
+    }
+    .xj-finder-row.is-nested {
+      padding-left: 28px;
+      color: #3a3a3c;
+      font-weight: 400;
+    }
+    .xj-finder-ico {
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+    }
+    .xj-finder-ico svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+    .xj-finder-meta {
+      font-size: 10px;
+      color: #9a9aa0;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    @container finder (max-width: 300px) {
+      .xj-finder-meta {
+        display: none;
+      }
+      .xj-finder-row {
+        grid-template-columns: 22px minmax(0, 1fr);
+      }
+      .xj-finder-side {
+        display: none;
+      }
+      .xj-finder-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @container finder (max-width: 220px) {
+      .xj-finder-row.is-nested {
+        padding-left: 12px;
+      }
+    }
+    .xj-spec-caps {
+      display: grid;
+      grid-template-columns: 7fr 3fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .xj-spec-caps p {
+      margin: 0;
+      color: #5a616c;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .xj-spec-note {
+      margin: 0;
+      color: var(--subtle);
+      font-size: 12px;
+    }
+
+    /* ③ Spec → 指南 */
+    .xj-spots {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .xj-spot {
+      padding: 16px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .xj-spot b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+    .xj-spot span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .xj-guide-stage {
+      margin-top: 18px;
+      margin-bottom: 52px;
+    }
+    .xj-guide-main {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .xj-guide-browser {
+      background: #eef1f6;
+    }
+    .xj-guide-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 12px;
+      background: #f4f6f9;
+      border-bottom: 1px solid var(--line);
+    }
+    .xj-guide-chrome b {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d0d7e2;
+    }
+    .xj-guide-chrome b:nth-child(1) { background: #ff5f57; }
+    .xj-guide-chrome b:nth-child(2) { background: #febc2e; }
+    .xj-guide-chrome b:nth-child(3) { background: #28c840; }
+    .xj-guide-chrome em {
+      margin-left: 8px;
+      color: var(--subtle);
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .xj-guide-frame {
+      display: block;
+      width: 100%;
+      height: 860px;
+      min-height: 480px;
+      border: 0;
+      background: #fff;
+    }
+    .xj-guide-close {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      padding: 16px 22px 16px 20px;
+      border: 0;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 7%, #f7f8fb);
+      box-shadow: none;
+    }
+    .xj-guide-close .ico {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 22px;
+      line-height: 1;
+    }
+    .xj-guide-close .ico i {
+      font-size: inherit;
+      line-height: 1;
+    }
+    .xj-guide-close p {
+      margin: 0;
+      color: var(--accent);
+      font-family: var(--font-zh);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .xj-convert {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px 28px;
+      margin: 0;
+      padding: 0;
+      color: var(--subtle);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+    .xj-convert-node {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      text-align: left;
+    }
+    .xj-convert-node em {
+      display: inline;
+      margin: 0;
+      color: color-mix(in srgb, var(--accent) 55%, #8b919c);
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .xj-convert-node strong {
+      display: inline;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0;
+      margin: 0;
+      color: #3a3f4a;
+    }
+    .xj-convert-node p {
+      display: inline;
+      margin: 0 0 0 4px;
+      color: var(--subtle);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .xj-convert-node p::before {
+      content: "·";
+      margin-right: 6px;
+      color: #c0c4cc;
+    }
+    .xj-convert-arrow {
+      color: #c5cad3;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 960px) {
+      .xj-hero-duo {
+        width: 100%;
+        margin: 8px 0 0;
+        opacity: 0.65;
+      }
+      .xj-intro-left {
+        gap: 40px;
+      }
+      .xj-intro-def {
+        font-size: 14px;
+      }
+      .xj-flow span {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .xj-triad-card {
+        padding: 10px 12px 12px;
+      }
+      .xj-triad-card p {
+        font-size: 13px;
+      }
+      .xj-why {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .xj-why-card {
+        grid-template-columns: 1fr;
+        justify-items: start;
+      }
+      .xj-why-art {
+        width: 96px;
+        height: 82px;
+        order: -1;
+      }
+      .xj-why-gap {
+        flex-direction: row;
+        gap: 8px;
+        padding: 2px 0;
+      }
+      .xj-why-gap .arr {
+        transform: rotate(90deg);
+        font-size: 22px;
+      }
+      .xj-why-card.good {
+        transform: none;
+      }
+      .xj-spec-pair {
+        grid-template-columns: 1fr;
+      }
+      .xj-spec-caps {
+        grid-template-columns: 1fr;
+      }
+      .xj-spec-browser {
+        align-self: stretch;
+      }
+      .xj-spec-finder {
+        height: auto;
+        min-height: 320px;
+        max-height: 420px;
+      }
+      .xj-spots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .xj-convert {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .xj-convert-arrow {
+        display: none;
+      }
+      .xj-guide-frame {
+        height: 560px;
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .xj-spots {
+        grid-template-columns: 1fr;
+      }
+      .xj-intro-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .xj-intro-left {
+        flex: none;
+        width: 100%;
+        order: 2;
+      }
+      .xj-workspace {
+        flex: none;
+        width: 100%;
+        order: 1;
+        align-self: stretch;
+      }
+    }
+  </style>
+</head>
+<body data-accent="violet">
+  <article class="case-page">
+    <div class="case-top">
+      <header class="case-nav">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK</a>
+        <div class="case-nav-meta">04 <span>/</span> 04</div>
+      </header>
+
+      <header class="case-hero case-hero-with-aside">
+        <div class="case-hero-copy">
+          <span class="case-hero-mark" aria-hidden="true">04</span>
+          <p class="case-kicker">04 / PROJECT</p>
+          <h1 class="case-title">玄玑平台 Spec 与用户指南</h1>
+          <p class="case-lead">为玄玑内置面向 Agent 的开发 Spec，<br>并用 Skill 自动生成带样例界面的用户指南。</p>
+        </div>
+        <aside class="xj-hero-duo" aria-label="碳基与硅基分工">
+          <div class="xj-hero-duo-item">
+            <strong>碳基 · 人</strong>
+            <span>说清要什么，并在关键节点验收</span>
+          </div>
+          <div class="xj-hero-duo-item">
+            <strong>硅基 · Agent</strong>
+            <span>按 Spec 与规范，分阶段建成</span>
+          </div>
+        </aside>
+      </header>
+    </div>
+
+    <!-- ① 玄玑是什么 -->
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>玄玑是什么</h2>
+        <p class="case-block-lead-nowrap xj-intro-lead">需求达意，玄玑成章。碳基用业务语言描述需求，硅基在企业规范、权限、沙箱与发布流程之内，把内部应用建设到可验收。</p>
+      </div>
+
+      <div class="xj-intro-row">
+        <div class="xj-intro-left">
+          <div class="xj-intro-copy">
+            <p class="xj-intro-def">
+              玄玑是科沃斯企业级、<strong>Spec 驱动</strong>的 AI Coding Agent 开发平台：碳基（人）用业务语言说清「要什么」并在关键节点验收，硅基（Agent）按阶段建成可预览、可上线的内部应用。
+            </p>
+            <div class="xj-flow" aria-label="协作流程">
+              <span>碳基提出需求</span>
+              <i aria-hidden="true">→</i>
+              <span>硅基按阶段建设</span>
+              <i aria-hidden="true">→</i>
+              <span>碳基验收</span>
+            </div>
+          </div>
+
+          <div class="xj-triad" aria-label="平台、开发者与原则">
+            <article class="xj-triad-card">
+              <span class="tag">PLATFORM</span>
+              <strong>平台</strong>
+              <p>自然语言需求转化为文档、可交互原型与可运行系统；规范注入生成过程，阶段闸门未确认不进入下一环。</p>
+            </article>
+            <article class="xj-triad-card">
+              <span class="tag">BUILDER</span>
+              <strong>开发者</strong>
+              <p>更接近「产品型构建者」：写清要什么、在关键节点守门验收，并守护规范是否一致。</p>
+            </article>
+            <article class="xj-triad-card">
+              <span class="tag">PRINCIPLE</span>
+              <strong>原则</strong>
+              <p>把需求给玄玑，不是把技术方案告诉他。结果须真正可用——能存数据、能操作、能管权限。</p>
+            </article>
+          </div>
+        </div>
+
+        <figure class="xj-workspace">
+          <div class="xj-workspace-frame">
+            <div class="xj-workspace-chrome" aria-hidden="true">
+              <b></b><b></b><b></b>
+              <em>WORKSPACE · 对话与预览</em>
+            </div>
+            <img
+              class="xj-workspace-shot"
+              src="./case-assets/xuanji/workspace.png"
+              alt="玄玑工作台：左侧对话，右侧预览"
+              width="1666"
+              height="912"
+              loading="lazy"
+            >
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ② 为什么要 Spec · Spec 里有什么 -->
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>为什么需要 Spec，里面有什么</h2>
+        <p>没有统一约束，同类页面会各做各的；把规则内置进平台，Agent 才有可执行的边界。</p>
+      </div>
+
+      <div class="xj-why" aria-label="为什么需要 Spec">
+        <article class="xj-why-card bad">
+          <div class="xj-why-copy">
+            <em>WITHOUT SPEC</em>
+            <strong>没有 Spec 时</strong>
+            <p>每个项目重新发明列表、详情与导入；视觉和交互漂移，验收标准也不清，Agent 只能凭感觉生成。</p>
+          </div>
+          <div class="xj-why-art" aria-hidden="true">
+            <svg viewBox="0 0 112 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect class="messy-card" x="6" y="18" width="48" height="36" rx="5" transform="rotate(-8 30 36)" stroke-width="1"/>
+              <rect class="messy-card" x="38" y="10" width="52" height="40" rx="5" transform="rotate(7 64 30)" stroke-width="1"/>
+              <rect class="messy-card" x="22" y="48" width="44" height="32" rx="5" transform="rotate(-4 44 64)" stroke-width="1"/>
+              <path class="messy-line" d="M14 32h20M16 40h12" stroke-width="1" stroke-linecap="round" transform="rotate(-8 24 36)"/>
+              <path class="messy-line" d="M50 24h26M52 32h16" stroke-width="1" stroke-linecap="round" transform="rotate(7 63 28)"/>
+              <circle class="messy-card" cx="88" cy="70" r="8" stroke-width="1"/>
+              <path class="messy-line" d="M70 80h30" stroke-width="1" stroke-linecap="round" transform="rotate(12 85 80)"/>
+            </svg>
+          </div>
+        </article>
+        <div class="xj-why-gap" aria-hidden="true">
+          <div class="arr">→</div>
+          <span>AFTER</span>
+        </div>
+        <article class="xj-why-card good">
+          <div class="xj-why-copy">
+            <em>WITH SPEC</em>
+            <strong>有了 Spec 之后</strong>
+            <p>同类页面共用同一套边界；高频能力沉淀为平台标准组件，少重复造轮子，体验保持一致。</p>
+          </div>
+          <div class="xj-why-art" aria-hidden="true">
+            <svg viewBox="0 0 112 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect class="tidy-card" x="10" y="12" width="40" height="30" rx="5" stroke-width="1"/>
+              <rect class="tidy-card" x="58" y="12" width="40" height="30" rx="5" stroke-width="1"/>
+              <rect class="tidy-card" x="10" y="50" width="40" height="30" rx="5" stroke-width="1"/>
+              <rect class="tidy-card" x="58" y="50" width="40" height="30" rx="5" stroke-width="1"/>
+              <path class="tidy-line" d="M18 22h24M18 30h16" stroke-width="1" stroke-linecap="round"/>
+              <path class="tidy-line" d="M66 22h24M66 30h16" stroke-width="1" stroke-linecap="round"/>
+              <path class="tidy-line" d="M18 60h24M18 68h16" stroke-width="1" stroke-linecap="round"/>
+              <path class="tidy-line" d="M66 60h24M66 68h16" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </article>
+      </div>
+
+      <div class="xj-spec-showcase">
+        <div class="xj-spec-showcase-head">
+          <strong>Spec 里有什么</strong>
+        </div>
+
+        <div class="xj-spec-pair">
+          <figure class="xj-spec-browser">
+            <div class="xj-spec-chrome" aria-hidden="true">
+              <b></b><b></b><b></b>
+              <em>玄玑控制台 · Spec / 技能</em>
+            </div>
+            <img
+              src="./case-assets/xuanji/console.png"
+              alt="玄玑控制台中的 Spec 与技能管理"
+              width="2100"
+              height="1187"
+              loading="lazy"
+            >
+          </figure>
+
+          <div class="xj-spec-finder" aria-label="Spec 文件夹示意">
+            <div class="xj-finder-toolbar" aria-hidden="true">
+              <div class="xj-finder-traffic"><i></i><i></i><i></i></div>
+              <div class="xj-finder-nav"><span>‹</span><span>›</span></div>
+              <div class="xj-finder-path">玄玑 Spec</div>
+            </div>
+            <div class="xj-finder-body">
+              <aside class="xj-finder-side" aria-hidden="true">
+                <div class="sec">收藏</div>
+                <div class="item is-on"><span class="dot"></span>玄玑 Spec</div>
+                <div class="item"><span class="dot" style="background:#f0c14a"></span>桌面</div>
+                <div class="item"><span class="dot" style="background:#8fd19e"></span>文稿</div>
+              </aside>
+              <div class="xj-finder-list">
+                <div class="xj-finder-row is-folder">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M1.5 4.5h4l1.2 1.5H14.5v7.5a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4.5z" fill="#7AA2F7"/><path d="M1.5 6h13" stroke="#5B86E5" stroke-width="0.8"/></svg>
+                  </span>
+                  <span>UI/UX SPEC</span>
+                  <span class="xj-finder-meta">10 项</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>通用全局交互设计要求.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>软件后台管理通用布局要求.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>标准门户主页布局规范.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>列表页设计规范.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>内容详情页交互.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>辛顿列表详情交互通用设计.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>通用后台登录页排版规范.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>科沃斯后台管理登录页.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>图表类开发规范.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>多语言相关特殊交互要求.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-folder">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none"><path d="M1.5 4.5h4l1.2 1.5H14.5v7.5a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4.5z" fill="#7AA2F7"/><path d="M1.5 6h13" stroke="#5B86E5" stroke-width="0.8"/></svg>
+                  </span>
+                  <span>功能 SPEC</span>
+                  <span class="xj-finder-meta">13 项</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>AI能力管理.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>AI知识库.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>SKILLS管理.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>MCP管理.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>能力中心.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>辛顿认证登录.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>科沃斯用户权限中心IAM.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>字典管理.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>导入导出.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>多语言.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>多币种多货币.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>飞书消息.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+                <div class="xj-finder-row is-nested">
+                  <span class="xj-finder-ico" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="#E8F1FF" stroke="#6B9BFF"/><path d="M5.5 5h5M5.5 7.5h5M5.5 10h3.5" stroke="#6B9BFF" stroke-width="1" stroke-linecap="round"/></svg>
+                  </span>
+                  <span>飞书日程.md</span>
+                  <span class="xj-finder-meta">Markdown</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="xj-spec-caps">
+          <p>玄玑管理控制台中的Spec / 技能管理。</p>
+          <p>编写维护Spec对应的相关Markdown文档。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ Spec → 指南 -->
+    <section class="case-block case-block-last">
+      <div class="case-block-copy">
+        <h2>把给 Agent 的 Spec，写成给人看的指南</h2>
+        <p>用 Skill 自动把约束 Agent 的 Spec 转成用户指南，以样例界面说明结果预期。</p>
+      </div>
+
+      <div class="xj-spots" aria-label="指南如何校准预期">
+        <div class="xj-spot">
+          <b>给 Agent（硅基）</b>
+          <span>Spec 规定边界；生成时按规则执行。</span>
+        </div>
+        <div class="xj-spot">
+          <b>给人（碳基）</b>
+          <span>指南用样例界面说明「应该长这样」。</span>
+        </div>
+        <div class="xj-spot">
+          <b>触发提示词</b>
+          <span>短话术即可唤起对应能力与规范。</span>
+        </div>
+        <div class="xj-spot">
+          <b>预期可校准</b>
+          <span>看见样例与清单后，再判断生成结果是否达标。</span>
+        </div>
+      </div>
+
+      <aside class="xj-guide-close" aria-label="指南收束">
+        <span class="ico" aria-hidden="true">
+          <i class="ri-crosshair-2-line"></i>
+        </span>
+        <p>当规范、示例与说明都被显性化，用户就能更准确地理解并校准 Agent 的生成结果。</p>
+      </aside>
+
+      <div class="xj-guide-stage">
+        <div class="xj-guide-main">
+          <div class="xj-guide-browser">
+            <div class="xj-guide-chrome" aria-hidden="true">
+              <b></b><b></b><b></b>
+              <em>用户指南 · 页面示意</em>
+            </div>
+            <iframe
+              class="xj-guide-frame"
+              title="玄玑用户指南示意"
+              src="./case-assets/xuanji/guides/guide-shell.html"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="xj-convert" aria-label="Spec 到指南的转化">
+        <article class="xj-convert-node">
+          <em>01</em>
+          <strong>Agent Spec</strong>
+          <p>触发条件、流程与硬约束</p>
+        </article>
+        <div class="xj-convert-arrow" aria-hidden="true">→</div>
+        <article class="xj-convert-node">
+          <em>02</em>
+          <strong>Skill</strong>
+          <p>抽取要点，套用指南骨架</p>
+        </article>
+        <div class="xj-convert-arrow" aria-hidden="true">→</div>
+        <article class="xj-convert-node">
+          <em>03</em>
+          <strong>用户指南</strong>
+          <p>样例界面 + 提示词 + 清单</p>
+        </article>
+      </div>
+    </section>
+
+    <div
+      class="case-bottom"
+      style="--case-bottom-pad-top:48px;--case-bottom-pad-bottom:12px;--case-footer-shift:-32px"
+    >
+      <footer class="case-page-footer">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK TO CASES</a>
+        <span>04 玄玑平台 Spec 与用户指南</span>
+      </footer>
+    </div>
+  </article>
+
+  <script src="./page-transition.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>字典管理 - 玄玑界面交互</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap');
+
+    :root {
+      --primary: #3877f5;
+      --primary-dark: #2563eb;
+      --primary-light: #5b93f7;
+      --accent: #0ea5e9;
+      --bg: #f5f8fd;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 2px 8px rgba(30, 41, 59, 0.06);
+      --shadow-md: 0 8px 24px rgba(30, 41, 59, 0.1);
+      --shadow-lg: 0 16px 48px rgba(30, 41, 59, 0.12);
+      --radius: 4px;
+      --topnav-height: 64px;
+      --content-width: 1200px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 15px;
+    }
+
+    .bg-interactive {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(56, 119, 245, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(14, 165, 233, 0.04) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.35'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .bg-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+    .bg-orb-1 {
+      width: 55vw; height: 55vw; max-width: 680px; max-height: 680px;
+      background: rgba(56, 119, 245, 0.09); top: -12%; left: -8%;
+      animation: bgFloat1 28s ease-in-out infinite;
+    }
+    .bg-orb-2 {
+      width: 45vw; height: 45vw; max-width: 560px; max-height: 560px;
+      background: rgba(14, 165, 233, 0.07); bottom: 5%; right: -6%;
+      animation: bgFloat2 34s ease-in-out infinite;
+    }
+    .bg-glow {
+      position: absolute; width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 119, 245, 0.06) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+    }
+    @keyframes bgFloat1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 30px) scale(1.06); } }
+    @keyframes bgFloat2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-35px, -25px) scale(1.05); } }
+    @media (prefers-reduced-motion: reduce) { .bg-orb { animation: none; } .bg-glow { display: none; } }
+
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 2px; z-index: 300; width: 0%;
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--accent));
+    }
+    .back-top {
+      position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px;
+      border-radius: 2px; background: var(--primary); color: #fff; border: 1px solid var(--primary-dark);
+      cursor: pointer; box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden;
+      transform: translateY(12px); transition: all 0.3s var(--ease); z-index: 200;
+      font-family: "Noto Serif SC", serif;
+    }
+    .back-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    .sidebar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
+      box-shadow: 0 2px 16px rgba(30, 41, 59, 0.06);
+    }
+    .header-inner {
+      max-width: none; margin: 0; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: var(--topnav-height); gap: 24px;
+      width: 100%;
+    }
+    .header-desc {
+      font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .nav-divider-full {
+      height: 3px;
+      background: linear-gradient(90deg, rgba(56,119,245,0.1), rgba(56,119,245,0.42) 25%, rgba(14,165,233,0.36) 50%, rgba(56,119,245,0.42) 75%, rgba(56,119,245,0.1));
+    }
+    .nav-bar { display: flex; align-items: center; min-width: 0; }
+    .nav-list { list-style: none; display: flex; align-items: center; margin: 0; gap: 0; }
+    .nav-list a {
+      display: flex; align-items: center; gap: 6px;
+      padding: 18px 14px 16px; color: var(--text-muted); text-decoration: none; font-size: 13px;
+      border-bottom: 3px solid transparent; margin-bottom: -3px; white-space: nowrap;
+    }
+    .nav-list li:first-child a { padding-left: 0; }
+    .nav-list a:hover { color: var(--primary-dark); }
+    .nav-list a.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+    .nav-num { font-family: "Noto Serif SC", serif; font-size: 10px; color: var(--primary); opacity: 0.65; min-width: 18px; }
+
+    .main { max-width: var(--content-width); margin: 80px auto 0; padding: 40px 32px 80px; }
+
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 55%, #ebf2ff 100%);
+      padding: 52px 48px 44px; border-radius: 8px; margin-bottom: 32px;
+      box-shadow: 0 4px 28px rgba(56, 119, 245, 0.1);
+      border: 1px solid rgba(56, 119, 245, 0.12);
+    }
+    .hero::before {
+      content: "导"; position: absolute; top: -24px; right: 32px;
+      font-family: "Noto Serif SC", serif; font-size: 200px; font-weight: 900;
+      color: rgba(56, 119, 245, 0.05); line-height: 1; pointer-events: none;
+    }
+    .hero::after {
+      content: ""; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+      background: linear-gradient(180deg, var(--primary-dark), var(--primary), var(--accent));
+      border-radius: 8px 0 0 8px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; margin-bottom: 18px;
+      background: rgba(56, 119, 245, 0.08); border: 1px solid rgba(56, 119, 245, 0.2);
+      border-radius: 20px; font-size: 12px; color: var(--primary); letter-spacing: 0.06em;
+    }
+    .hero-badge::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--primary); box-shadow: 0 0 6px rgba(56, 119, 245, 0.5);
+    }
+    .hero h2 {
+      font-family: "Noto Serif SC", serif; font-size: 38px; font-weight: 900;
+      margin-bottom: 12px; letter-spacing: 0.06em; position: relative;
+      background: linear-gradient(135deg, #1e40af 0%, var(--primary-dark) 28%, var(--primary) 62%, #93c5fd 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero .lead { font-size: 17px; color: var(--text-muted); line-height: 2; position: relative; }
+    .hero .lead strong { color: var(--primary-dark); -webkit-text-fill-color: var(--primary-dark); }
+    .hero-tags {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      margin-top: 18px; padding-top: 16px;
+      border-top: 1px solid rgba(56, 119, 245, 0.12); position: relative;
+    }
+    .hero-tags-label {
+      font-size: 14px; font-weight: 600; color: var(--primary-dark);
+      white-space: nowrap; margin-right: 4px;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.85); padding: 8px 18px; border-radius: 24px; font-size: 13px;
+      border: 1px solid rgba(56, 119, 245, 0.22); color: var(--primary-dark);
+    }
+    .hero-tag-arrow {
+      color: var(--primary); font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+
+    .section {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 36px 40px; margin-bottom: 32px;
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+    .section.visible { opacity: 1; transform: translateY(0); }
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      font-family: "Noto Serif SC", serif; font-size: 36px; font-weight: 900;
+      color: var(--primary); opacity: 0.25; line-height: 1;
+    }
+    .section h2 {
+      font-family: "Noto Serif SC", serif; font-size: 22px; font-weight: 700; letter-spacing: 0.1em;
+      background: linear-gradient(120deg, #1d4ed8 0%, var(--primary) 60%, #7ab8ff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .section h3 {
+      font-family: "Noto Serif SC", serif; font-size: 16px; font-weight: 600; color: var(--primary-dark);
+      margin: 28px 0 14px; padding-left: 12px; border-left: 3px solid var(--primary);
+    }
+    .section h3:first-of-type { margin-top: 0; }
+    .section p { margin-bottom: 12px; }
+    .section strong { color: var(--primary-dark); }
+    .section-lead {
+      font-size: 14px; color: var(--text-muted); line-height: 1.85;
+      margin-bottom: 16px;
+    }
+
+    .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead { background: #f8fafc; }
+    th {
+      text-align: left; padding: 14px 18px; font-weight: 600; color: var(--primary-dark);
+      border-bottom: 2px solid var(--primary); font-family: "Noto Serif SC", serif; font-size: 13px;
+    }
+    td { padding: 14px 18px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    .prompt-cell { cursor: pointer; position: relative; padding-right: 56px; white-space: nowrap; }
+    .prompt-cell:hover { background: #eff6ff !important; }
+    .prompt-cell::after {
+      content: "复制"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 11px; color: var(--primary); opacity: 0; background: #dbeafe; padding: 2px 8px; border-radius: 2px;
+    }
+    .prompt-cell:hover::after { opacity: 1; }
+
+    .adjust-banner {
+      margin-top: 16px; padding: 12px 14px;
+      background: #fffaf5;
+      border: 1px solid #fde8d2; border-radius: var(--radius);
+    }
+    .adjust-banner .label {
+      font-size: 14px; color: #c2410c; letter-spacing: 0.06em; font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .adjust-banner p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
+    .adjust-copy {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 8px 12px; background: #fff; border: 1px dashed #f5d0a9;
+      border-radius: var(--radius); cursor: pointer;
+    }
+    .adjust-copy code { font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text); }
+    .adjust-copy .copy-hint { font-size: 11px; color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 2px; }
+
+    .ui-gallery { display: grid; grid-template-columns: 1fr; gap: 22px; }
+    .ui-shot { margin: 0; }
+    .ui-shot-frame {
+      position: relative; display: block; width: 100%;
+      border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+      background: #f1f5f9; cursor: zoom-in; padding: 0; text-align: left;
+    }
+    .ui-shot-frame:hover { border-color: var(--primary); }
+    .shot-tag {
+      position: absolute; top: 10px; left: 10px; z-index: 3;
+      font-size: 11px; color: #fff; background: rgba(30, 41, 59, 0.55);
+      padding: 3px 8px; border-radius: 2px; pointer-events: none;
+    }
+    .ui-shot figcaption { padding: 0 4px 12px; }
+    .ui-shot figcaption > strong {
+      display: block; font-size: 14px; margin-bottom: 4px; color: var(--primary-dark);
+    }
+    .ui-shot figcaption p { font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.7; }
+    .ui-shot figcaption p strong {
+      display: inline; font-size: inherit; margin: 0; font-weight: 600; color: var(--primary-dark);
+    }
+    .ui-shot-media {
+      display: block; width: 100%; height: auto; vertical-align: top;
+      background: #e8eef6;
+    }
+    .lightbox .ui-shot-media { max-width: min(960px, 92vw); border-radius: 6px; }
+
+    .ui-mock { background: #f8fafc; padding: 16px; color: #334155; font-size: 12px; }
+    .mock-page { background: #fff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 14px 16px 16px; position: relative; }
+    .mock-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .mock-title { font-family: "Noto Serif SC", serif; font-size: 16px; font-weight: 700; color: #1e40af; }
+    .mock-actions { display: flex; gap: 8px; align-items: center; }
+    .mock-btn {
+      height: 28px; padding: 0 12px; border-radius: 2px; font-size: 12px;
+      display: inline-flex; align-items: center; border: 1px solid #cbd5e1; background: #fff; color: #475569;
+    }
+    .mock-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
+    .mock-btn.import {
+      background: #fff; color: var(--primary-dark); border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 119, 245, 0.28);
+      position: relative; z-index: 2;
+      animation: importPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes importPulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(56, 119, 245, 0.45); }
+      50% { box-shadow: 0 0 0 0 rgba(56, 119, 245, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mock-btn.import { animation: none; box-shadow: 0 0 0 3px rgba(56, 119, 245, 0.28); }
+    }
+    .mock-filters { display: flex; gap: 8px; margin-bottom: 12px; }
+    .mock-search, .mock-select {
+      height: 28px; background: #f8fafc; border: 1px solid #dbe3ee; border-radius: 2px;
+    }
+    .mock-search { width: 180px; }
+    .mock-select { width: 96px; }
+    .mock-table { border: 1px solid #e2e8f0; border-radius: 2px; overflow: hidden; background: #fff; }
+    .mock-thead, .mock-row { display: grid; grid-template-columns: 1.3fr 1fr 0.8fr 0.8fr 0.9fr; font-size: 12px; }
+    .mock-thead { background: #f1f5f9; font-weight: 600; color: #1e40af; }
+    .mock-thead span, .mock-row span { padding: 8px 10px; }
+    .mock-row { border-top: 1px solid #f1f5f9; color: #64748b; }
+    .mock-pill { display: inline-block; padding: 1px 7px; border-radius: 10px; background: #dcfce7; color: #166534; font-size: 10px; }
+    .mock-page-foot { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; }
+    .mock-page-foot i {
+      width: 22px; height: 22px; border: 1px solid #e2e8f0; background: #fff; border-radius: 2px;
+      font-style: normal; font-size: 10px; display: flex; align-items: center; justify-content: center; color: #64748b;
+    }
+    .mock-page-foot i.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .entry-note {
+      margin-top: 12px; display: flex; align-items: center; gap: 10px;
+      font-size: 12px; color: var(--primary-dark);
+    }
+    .entry-note .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--primary); box-shadow: 0 0 0 4px rgba(56, 119, 245, 0.2);
+    }
+
+    .stage {
+      position: relative; min-height: 320px;
+      background: #e8eef6; border-radius: 4px; overflow: hidden;
+    }
+    .stage-list { padding: 14px; filter: blur(0.4px); opacity: 0.55; pointer-events: none; }
+    .stage-mask { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.28); }
+    .modal {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: min(520px, 88%); background: #fff; border-radius: 6px;
+      box-shadow: var(--shadow-lg); z-index: 2; overflow: hidden;
+    }
+    .modal-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; border-bottom: 1px solid #e2e8f0;
+      font-family: "Noto Serif SC", serif; font-size: 15px; font-weight: 700; color: #1e40af;
+    }
+    .modal-hd .x { color: #94a3b8; font-size: 16px; font-weight: 400; }
+    .modal-bd { padding: 16px; }
+    .modal-ft {
+      display: flex; justify-content: flex-end; gap: 8px;
+      padding: 12px 16px; border-top: 1px solid #e2e8f0; background: #f8fafc;
+    }
+    .steps { display: flex; gap: 6px; margin-bottom: 14px; }
+    .step {
+      flex: 1; text-align: center; font-size: 11px; color: #94a3b8;
+      padding: 7px 4px; background: #f8fafc; border: 1px dashed #e2e8f0; border-radius: 2px;
+    }
+    .step.on { color: var(--primary-dark); border-color: var(--primary); background: #eff6ff; font-weight: 600; }
+    .upload-box {
+      border: 1px dashed #93c5fd; background: #f8fbff; border-radius: 4px;
+      padding: 22px 12px; text-align: center; color: #64748b; margin: 10px 0 0;
+    }
+    .upload-box b { display: block; color: var(--primary-dark); margin-bottom: 4px; }
+    .tpl-link { color: var(--primary); font-size: 12px; }
+    .alert {
+      font-size: 12px; padding: 8px 10px; border-radius: 2px; margin-bottom: 10px;
+      background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;
+    }
+    .alert.err { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+
+    .feature-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .feature-item {
+      display: flex; gap: 10px; padding: 10px 14px;
+      background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius);
+      align-items: flex-start;
+    }
+    .feature-item .n {
+      width: 22px; height: 22px; border-radius: 2px; background: #dbeafe;
+      color: var(--primary); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-family: "Noto Serif SC", serif; margin-top: 1px;
+    }
+    .feature-item strong { display: block; font-size: 13px; margin-bottom: 2px; line-height: 1.4; }
+    .feature-item span { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+
+    .gen-note {
+      margin: 8px 0 0; padding: 20px 4px 8px;
+      border-top: 1px solid var(--border);
+    }
+    .gen-note h3 {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 13px; font-weight: 500; color: var(--text-muted);
+      margin: 0 0 10px; padding: 0; border: none; letter-spacing: 0.04em;
+    }
+    .gen-note ol {
+      margin: 0; padding-left: 18px; color: #94a3b8; font-size: 13px; line-height: 1.75;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px;
+    }
+    .gen-note li { margin-bottom: 0; }
+    .gen-note li:last-child { margin-bottom: 0; }
+    @media (max-width: 900px) {
+      .gen-note ol { grid-template-columns: 1fr; }
+    }
+
+    .copy-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--primary-dark); color: #fff; padding: 10px 24px; border-radius: 2px;
+      font-size: 13px; opacity: 0; visibility: hidden; transition: all 0.3s var(--ease); z-index: 400;
+      font-family: "Noto Serif SC", serif; letter-spacing: 0.1em;
+    }
+    .copy-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .lightbox {
+      position: fixed; inset: 0; background: rgba(28, 25, 23, 0.9); z-index: 500;
+      display: flex; align-items: center; justify-content: center; padding: 40px;
+      opacity: 0; visibility: hidden; cursor: zoom-out;
+    }
+    .lightbox.show { opacity: 1; visibility: visible; }
+    .lightbox-body {
+      max-width: 960px; width: 100%; background: #f8fafc; border-radius: 8px;
+      overflow: auto; max-height: none; cursor: default;
+    }
+    .lightbox-body .shot-tag { display: none; }
+    .menu-toggle {
+      display: none; position: fixed; top: 12px; right: 16px; z-index: 200;
+      background: var(--primary-dark); color: #fff; border: none; padding: 8px 14px; border-radius: 2px;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(30, 41, 59, 0.4); z-index: 99; }
+    .sidebar-overlay.show { display: block; }
+    .footer {
+      text-align: center; padding: 28px; color: var(--text-muted);
+      font-size: 12px; font-family: "Noto Serif SC", serif; letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 900px) {
+      .header-inner { padding: 0 20px; height: auto; min-height: var(--topnav-height); flex-wrap: wrap; }
+      .header-desc { display: none; }
+      .main { padding: 24px 20px 60px; margin-top: 80px; }
+      .hero { padding: 36px 24px; }
+      .hero h2 { font-size: 26px; }
+      .section { padding: 24px 20px; }
+      .menu-toggle { display: block; }
+      .sidebar .nav-bar { display: none; }
+      .sidebar.nav-open .header-inner { flex-direction: column; align-items: stretch; }
+      .sidebar.nav-open .nav-bar {
+        display: block; width: 100%;
+        background: #fff; padding: 0 0 8px; box-shadow: none;
+      }
+      .sidebar.nav-open .nav-list { flex-direction: column; align-items: stretch; }
+      .sidebar.nav-open .nav-list a { padding: 12px 0; margin-bottom: 0; }
+    }
+  
+    /* dict-management guide extras: drawer / modal document-flow stages */
+    .hero::before { content: "典"; }
+    .mock-btn.import {
+      background: #fff; color: var(--primary-dark); border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 119, 245, 0.28);
+      position: relative; z-index: 2;
+      animation: importPulse 1.6s ease-in-out infinite;
+    }
+    .mock-thead.cols-6, .mock-row.cols-6 { grid-template-columns: 1.2fr 1.1fr 0.6fr 0.7fr 1.1fr 1fr; }
+    .mock-thead.cols-5b, .mock-row.cols-5b { grid-template-columns: 1.2fr 1fr 0.6fr 0.7fr 1fr; }
+    .mock-switch {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #166534;
+    }
+    .mock-switch .track {
+      width: 28px; height: 16px; border-radius: 999px; background: #22c55e; position: relative;
+    }
+    .mock-switch .track::after {
+      content: ""; position: absolute; top: 2px; right: 2px; width: 12px; height: 12px;
+      border-radius: 50%; background: #fff;
+    }
+    .mock-switch.off { color: #64748b; }
+    .mock-switch.off .track { background: #94a3b8; }
+    .mock-switch.off .track::after { right: auto; left: 2px; }
+    .mock-link { color: var(--primary); margin-right: 8px; }
+    .mock-muted { color: #94a3b8; }
+    .mock-form { display: grid; gap: 10px; }
+    .mock-field { display: grid; grid-template-columns: 88px 1fr; align-items: center; gap: 8px; font-size: 12px; }
+    .mock-field label { color: #64748b; text-align: right; }
+    .mock-field label em { color: #ef4444; font-style: normal; margin-left: 2px; }
+    .mock-input {
+      height: 28px; border: 1px solid #dbe3ee; border-radius: 2px; background: #fff;
+      padding: 0 8px; color: #334155; display: flex; align-items: center;
+    }
+    .mock-input.ro { background: #f1f5f9; color: #64748b; }
+    .mock-audit {
+      margin-top: 8px; padding-top: 10px; border-top: 1px dashed #e2e8f0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 11px; color: #64748b;
+    }
+    .mock-audit b { color: #475569; font-weight: 600; margin-right: 6px; }
+
+    .stage-modal {
+      display: grid; place-items: center; padding: 20px 14px; background: #e8eef6; min-height: 0;
+    }
+    .stage-modal .modal {
+      position: relative; left: auto; top: auto; transform: none; width: min(520px, 100%);
+      margin: 0 auto; z-index: 1;
+    }
+    .stage-drawer {
+      display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr;
+      background: #e8eef6; border-radius: 4px; overflow: hidden; min-height: 320px;
+    }
+    .stage-drawer > .stage-list,
+    .stage-drawer > .stage-mask,
+    .stage-drawer > .drawer { grid-area: 1 / 1; }
+    .stage-drawer .stage-list {
+      padding: 14px; filter: blur(0.4px); opacity: 0.55; pointer-events: none;
+      min-height: 320px;
+    }
+    .stage-drawer .stage-mask {
+      background: rgba(15, 23, 42, 0.28); z-index: 1; pointer-events: none;
+    }
+    .stage-drawer .drawer {
+      justify-self: end; align-self: stretch; width: min(340px, 36%);
+      z-index: 2; background: #fff; border-left: 1px solid #e2e8f0;
+      box-shadow: -12px 0 32px rgba(30, 41, 59, 0.18);
+      display: flex; flex-direction: column; min-height: 100%;
+    }
+    .stage-drawer.wide .drawer { width: min(640px, 72%); }
+    .drawer-hd {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 14px 16px; border-bottom: 1px solid #e2e8f0;
+      font-family: "Noto Serif SC", serif; font-size: 14px; font-weight: 700; color: #1e40af;
+    }
+    .drawer-bd { padding: 14px 16px; flex: 1; }
+    .drawer-ft {
+      display: flex; justify-content: flex-end; gap: 8px;
+      padding: 12px 16px; border-top: 1px solid #e2e8f0; background: #f8fafc;
+    }
+    .drawer-ctx { font-size: 11px; color: #64748b; font-weight: 400; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .trigger-box {
+      margin: 12px 0 16px; padding: 12px 14px; background: #f8fafc;
+      border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-muted);
+    }
+    .trigger-box strong { color: var(--primary-dark); }
+    .trigger-box code {
+      display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; background: #eff6ff;
+      border: 1px solid #bfdbfe; border-radius: 2px; color: var(--primary-dark); font-size: 12px;
+      font-family: inherit;
+    }
+    .lightbox { overflow: auto; align-items: flex-start; }
+    .lightbox-body { max-height: none; margin: auto; }
+    body.lightbox-open { overflow: hidden; }
+
+  </style>
+</head>
+<body>
+  <div class="bg-interactive" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+  </div>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <button class="menu-toggle" onclick="toggleSidebar()">☰ 目录</button>
+  <button class="back-top" id="backTop" onclick="scrollToTop()">↑</button>
+  <div class="copy-toast" id="copyToast">已复制到剪贴板</div>
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <div class="lightbox-body" id="lightboxBody" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="header-inner">
+      <nav class="nav-bar">
+        <ul class="nav-list">
+          <li><a href="#prompt"><span class="nav-num">01</span>技能触发提示词</a></li>
+          <li><a href="#ui"><span class="nav-num">02</span>参考交互界面</a></li>
+          <li><a href="#features"><span class="nav-num">03</span>功能清单及描述</a></li>
+        </ul>
+      </nav>
+      <p class="header-desc">字典列表 · 字典值侧拉 · 启停排序 · 多语言按需</p>
+    </div>
+    <div class="nav-divider-full"></div>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <div class="hero-badge">SKILL · 字典管理</div>
+      <h2>字典管理</h2>
+      <p class="lead">
+        在<strong>系统管理 → 字典管理</strong>维护可配置枚举主数据。先维护字典元数据，再从行内「字典值」打开侧拉维护枚举项；业务只引用编码，停用不删除。
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tags-label">简要步骤：</span>
+        <span class="hero-tag">进入字典列表</span>
+        <span class="hero-tag-arrow">→</span>
+        <span class="hero-tag">新建 / 编辑字典</span>
+        <span class="hero-tag-arrow">→</span>
+        <span class="hero-tag">打开「字典值」侧拉</span>
+        <span class="hero-tag-arrow">→</span>
+        <span class="hero-tag">添加枚举项与编码</span>
+        <span class="hero-tag-arrow">→</span>
+        <span class="hero-tag">业务按下拉引用启用值</span>
+      </div>
+    </header>
+
+    <section class="section" id="prompt">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>技能触发提示词</h2>
+      </div>
+      <p>说清「要做字典管理 / 数据字典」即可。</p>
+      <h3>触发条件</h3>
+      <div class="trigger-box">
+        用户提及下列任一表述即可调用本规范，不要求写出英文关键字：
+        <div style="margin-top:8px;">
+          <code>字典管理</code>
+          <code>字典功能</code>
+          <code>数据字典</code>
+          <code>dict-management</code>
+        </div>
+        <p style="margin:10px 0 0;font-size:12px;">反面排除：用户明确要求「写死前端常量、不做管理页」时，不以本规范完整展开管理端。</p>
+      </div>
+      <h3>触发提示词 <span style="font-size:12px;color:var(--text-muted);font-weight:400;">（点击可复制）</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>场景</th><th>提示词</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>做字典管理</strong></td>
+              <td class="prompt-cell" data-copy="帮我做字典管理。">帮我做字典管理。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="adjust-banner">
+        <div class="label">结果未达到下述要求时使用</div>
+        <p>缺字典值侧拉、出现删除、编码可改、未点查询即筛选、或多语言未按启用语言扩展时，用这句话按规范重跑。</p>
+        <div class="adjust-copy" data-copy="请使用「字典管理」规范，按规范进行调整。">
+          <code>请使用「字典管理」规范，按规范进行调整。</code>
+          <span class="copy-hint">复制</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ui">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>参考交互界面</h2>
+      </div>
+
+      <div class="ui-gallery">
+        <figure class="ui-shot">
+          <figcaption>
+            <strong>图 1 · 字典列表入口</strong>
+            <p>入口建议在系统设置 / 基础配置下。页头标题「字典管理」，右上<strong>仅一个</strong>主按钮「新建字典」；筛选须点「查询」生效；状态列为 Switch；操作含「编辑」「字典值」。</p>
+          </figcaption>
+          <button type="button" class="ui-shot-frame">
+            <span class="shot-tag">示意图</span>
+            <div class="ui-mock">
+              <div class="mock-page">
+                <div class="mock-head">
+                  <div class="mock-title">字典管理</div>
+                  <div class="mock-actions">
+                    <span class="mock-btn import primary">新建字典</span>
+                  </div>
+                </div>
+                <div class="mock-filters">
+                  <span class="mock-search" title="字典名称"></span>
+                  <span class="mock-search" style="width:140px;" title="字典编码"></span>
+                  <span class="mock-select"></span>
+                  <span class="mock-btn">查询</span>
+                  <span class="mock-btn">重置</span>
+                </div>
+                <div class="mock-table">
+                  <div class="mock-thead cols-6"><span>字典名称</span><span>字典编码</span><span>排序</span><span>状态</span><span>更新时间</span><span>操作</span></div>
+                  <div class="mock-row cols-6">
+                    <span>需求类型</span><span>REQ_TYPE</span><span style="text-align:right;">10</span>
+                    <span><span class="mock-switch"><i class="track"></i>启用</span></span>
+                    <span>2026-09-02 11:20:00</span>
+                    <span><a class="mock-link">编辑</a><a class="mock-link">字典值</a></span>
+                  </div>
+                  <div class="mock-row cols-6">
+                    <span>优先级</span><span>PRIORITY</span><span style="text-align:right;">20</span>
+                    <span><span class="mock-switch"><i class="track"></i>启用</span></span>
+                    <span>2026-09-01 09:00:00</span>
+                    <span><a class="mock-link">编辑</a><a class="mock-link">字典值</a></span>
+                  </div>
+                  <div class="mock-row cols-6">
+                    <span>旧状态码</span><span>LEGACY_ST</span><span style="text-align:right;">90</span>
+                    <span><span class="mock-switch off"><i class="track"></i>停用</span></span>
+                    <span>2026-08-12 16:40:00</span>
+                    <span><a class="mock-link">编辑</a><a class="mock-link">字典值</a></span>
+                  </div>
+                </div>
+                <div class="mock-page-foot"><i>‹</i><i class="on">1</i><i>2</i><i>›</i></div>
+              </div>
+              <div class="entry-note"><span class="dot"></span>页头只保留「新建字典」一个主按钮；无删除。停用后仍保留编码，不物理删除。</div>
+            </div>
+          </button>
+        </figure>
+
+        <figure class="ui-shot">
+          <figcaption>
+            <strong>图 2 · 新建 / 编辑字典（侧拉）</strong>
+            <p>字段数通常 ≥ 4，使用约页面 30% 宽的 Drawer。字典编码新建必填、编辑<strong>只读</strong>；多语言名称仅在项目启用对应语言时出现，禁止预留未启用语言空列。</p>
+          </figcaption>
+          <button type="button" class="ui-shot-frame">
+            <span class="shot-tag">示意图</span>
+            <div class="ui-mock" style="padding:12px;">
+              <div class="stage-drawer">
+                <div class="stage-list">
+                  <div class="mock-head"><div class="mock-title">字典管理</div><div class="mock-actions"><span class="mock-btn primary">新建字典</span></div></div>
+                  <div class="mock-filters">
+                    <span class="mock-search"></span>
+                    <span class="mock-select"></span>
+                    <span class="mock-btn">查询</span>
+                    <span class="mock-btn">重置</span>
+                  </div>
+                  <div class="mock-table">
+                    <div class="mock-thead cols-5b"><span>字典名称</span><span>字典编码</span><span>排序</span><span>状态</span><span>操作</span></div>
+                    <div class="mock-row cols-5b"><span>需求类型</span><span>REQ_TYPE</span><span>10</span><span>启用</span><span>编辑 · 字典值</span></div>
+                    <div class="mock-row cols-5b"><span>优先级</span><span>PRIORITY</span><span>20</span><span>启用</span><span>编辑 · 字典值</span></div>
+                    <div class="mock-row cols-5b"><span>旧状态码</span><span>LEGACY_ST</span><span>90</span><span>停用</span><span>编辑 · 字典值</span></div>
+                  </div>
+                </div>
+                <div class="stage-mask"></div>
+                <div class="drawer">
+                  <div class="drawer-hd">新建字典<span class="x" style="color:#94a3b8;font-weight:400;">×</span></div>
+                  <div class="drawer-bd">
+                    <div class="mock-form">
+                      <div class="mock-field"><label>字典名称<em>*</em></label><span class="mock-input">需求类型</span></div>
+                      <div class="mock-field"><label>字典英文名</label><span class="mock-input">Requirement Type</span></div>
+                      <div class="mock-field"><label>字典编码<em>*</em></label><span class="mock-input">REQ_TYPE</span></div>
+                      <div class="mock-field"><label>排序<em>*</em></label><span class="mock-input">10</span></div>
+                      <div class="mock-field"><label>状态</label><span class="mock-switch"><i class="track"></i>启用</span></div>
+                    </div>
+                    <p class="mock-muted" style="margin-top:10px;font-size:11px;">示意：仅启用中英时出现英文名；未启用日语则不出现「字典日文名」。</p>
+                  </div>
+                  <div class="drawer-ft"><span class="mock-btn">取消</span><span class="mock-btn primary">保存</span></div>
+                </div>
+              </div>
+            </div>
+          </button>
+        </figure>
+
+        <figure class="ui-shot">
+          <figcaption>
+            <strong>图 3 · 字典值侧拉</strong>
+            <p>从列表操作「字典值」打开约 <strong>70%</strong> 宽侧拉，标题带当前字典名称与编码。可添加字典值；操作仅「编辑」，<strong>无删除</strong>；不足一页隐藏分页。</p>
+          </figcaption>
+          <button type="button" class="ui-shot-frame">
+            <span class="shot-tag">示意图</span>
+            <div class="ui-mock" style="padding:12px;">
+              <div class="stage-drawer wide">
+                <div class="stage-list">
+                  <div class="mock-head"><div class="mock-title">字典管理</div><div class="mock-actions"><span class="mock-btn primary">新建字典</span></div></div>
+                  <div class="mock-filters">
+                    <span class="mock-search"></span>
+                    <span class="mock-select"></span>
+                    <span class="mock-btn">查询</span>
+                    <span class="mock-btn">重置</span>
+                  </div>
+                  <div class="mock-table">
+                    <div class="mock-thead cols-5b"><span>字典名称</span><span>字典编码</span><span>排序</span><span>状态</span><span>操作</span></div>
+                    <div class="mock-row cols-5b"><span>需求类型</span><span>REQ_TYPE</span><span>10</span><span>启用</span><span>编辑 · 字典值</span></div>
+                    <div class="mock-row cols-5b"><span>优先级</span><span>PRIORITY</span><span>20</span><span>启用</span><span>编辑 · 字典值</span></div>
+                    <div class="mock-row cols-5b"><span>旧状态码</span><span>LEGACY_ST</span><span>90</span><span>停用</span><span>编辑 · 字典值</span></div>
+                  </div>
+                </div>
+                <div class="stage-mask"></div>
+                <div class="drawer">
+                  <div class="drawer-hd">
+                    <div>
+                      字典值管理
+                      <div class="drawer-ctx">需求类型（REQ_TYPE）</div>
+                    </div>
+                    <span class="mock-btn primary">添加字典值</span>
+                  </div>
+                  <div class="drawer-bd">
+                    <div class="mock-table">
+                      <div class="mock-thead cols-5b"><span>显示值名称</span><span>值编码</span><span>排序</span><span>状态</span><span>操作</span></div>
+                      <div class="mock-row cols-5b">
+                        <span>功能需求</span><span>FEATURE</span><span style="text-align:right;">10</span>
+                        <span><span class="mock-switch"><i class="track"></i>启用</span></span>
+                        <span><a class="mock-link">编辑</a></span>
+                      </div>
+                      <div class="mock-row cols-5b">
+                        <span>缺陷修复</span><span>BUGFIX</span><span style="text-align:right;">20</span>
+                        <span><span class="mock-switch"><i class="track"></i>启用</span></span>
+                        <span><a class="mock-link">编辑</a></span>
+                      </div>
+                      <div class="mock-row cols-5b">
+                        <span>历史类型</span><span>LEGACY</span><span style="text-align:right;">90</span>
+                        <span><span class="mock-switch off"><i class="track"></i>停用</span></span>
+                        <span><a class="mock-link">编辑</a></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </button>
+        </figure>
+
+        <figure class="ui-shot">
+          <figcaption>
+            <strong>图 4 · 添加 / 编辑字典值</strong>
+            <p>字段较少用 Modal；多语言字段变多时改用内嵌 Drawer。值编码创建后只读；编辑时须只读展示创建时间、创建人、更新时间、更新人；新建不展示审计区。</p>
+          </figcaption>
+          <button type="button" class="ui-shot-frame">
+            <span class="shot-tag">示意图</span>
+            <div class="ui-mock" style="padding:12px;">
+              <div class="stage-modal">
+                <div class="modal" style="width:min(480px,100%);">
+                  <div class="modal-hd">编辑字典值<span class="x">×</span></div>
+                  <div class="modal-bd">
+                    <div class="mock-form">
+                      <div class="mock-field"><label>显示值名称<em>*</em></label><span class="mock-input">功能需求</span></div>
+                      <div class="mock-field"><label>值英文名称</label><span class="mock-input">Feature</span></div>
+                      <div class="mock-field"><label>值编码<em>*</em></label><span class="mock-input ro">FEATURE</span></div>
+                      <div class="mock-field"><label>排序<em>*</em></label><span class="mock-input">10</span></div>
+                      <div class="mock-field"><label>状态</label><span class="mock-switch"><i class="track"></i>启用</span></div>
+                    </div>
+                    <div class="mock-audit">
+                      <div><b>创建时间</b>2026-09-01 09:00:00</div>
+                      <div><b>创建人</b>管理员</div>
+                      <div><b>更新时间</b>2026-09-02 11:20:00</div>
+                      <div><b>更新人</b>lin.xiaoyu</div>
+                    </div>
+                  </div>
+                  <div class="modal-ft"><span class="mock-btn">取消</span><span class="mock-btn primary">保存</span></div>
+                </div>
+              </div>
+            </div>
+          </button>
+        </figure>
+
+        <figure class="ui-shot">
+          <figcaption>
+            <strong>图 5 · 业务引用与停用边界</strong>
+            <p>业务表单下拉按字典编码拉取<strong>仅启用中</strong>的值；界面按用户语言展示文案，缺失回退主语言再回退编码。停用项不再出现在新建选项，历史数据仍按编码回显。</p>
+          </figcaption>
+          <button type="button" class="ui-shot-frame">
+            <span class="shot-tag">示意图</span>
+            <div class="ui-mock">
+              <div class="mock-page">
+                <div class="mock-head">
+                  <div class="mock-title">新建需求</div>
+                </div>
+                <div class="mock-form" style="max-width:420px;">
+                  <div class="mock-field"><label>需求标题<em>*</em></label><span class="mock-input">支持字典管理</span></div>
+                  <div class="mock-field"><label>需求类型<em>*</em></label>
+                    <span class="mock-input" style="justify-content:space-between;">功能需求<span class="mock-muted">▾</span></span>
+                  </div>
+                </div>
+                <div style="margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;color:#64748b;">
+                  下拉选项来自字典 <code style="color:var(--primary-dark);">REQ_TYPE</code> 的启用值：功能需求（FEATURE）、缺陷修复（BUGFIX）。<br>
+                  已停用的「历史类型」不出现；若历史单据编码为 LEGACY，详情仍可回显原名称或编码。
+                </div>
+              </div>
+            </div>
+          </button>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>功能清单及描述</h2>
+      </div>
+      <p class="section-lead">使用本功能后，应具备字典与字典值分层维护能力。出现删除、编码可改、输入即筛、或多语言未按启用语言扩展，均视为未按规范交付。</p>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="n">1</span>
+          <div><strong>字典列表三段式</strong><span>页头仅「新建字典」主按钮；筛选可折叠且必须点「查询」才生效；表格含名称、编码、排序、Switch 状态、更新时间与操作；分页右下，不足一页隐藏。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">2</span>
+          <div><strong>字典新建 / 编辑 Drawer</strong><span>约页面 30% 宽侧拉。字典名称、编码、排序必填；编码全局唯一，编辑时只读；状态默认启用。多语言名称仅对已启用语言按需横向扩展。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">3</span>
+          <div><strong>字典值侧拉维护</strong><span>行内「字典值」打开约 70% 宽 Drawer，标题带字典上下文。添加 / 编辑用 Modal 或加宽表单（随字段数）；值编码字典内唯一，创建后只读。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">4</span>
+          <div><strong>启停可控、禁止删除</strong><span>字典与字典值均不提供删除。下线一律停用；停用后不进入业务新建选项，历史引用仍按编码回显。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">5</span>
+          <div><strong>多语言按需扩展</strong><span>先确认项目是否多语言及启用语言列表，再横向增加名称字段。禁止单语言项目写死英/日文列；未启用语言不渲染对应输入与列。展示回退：用户语言 → 主语言 → 编码。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">6</span>
+          <div><strong>编辑审计信息</strong><span>编辑字典值弹层只读展示创建时间、创建人、更新时间、更新人（两列布局）；新建不展示。保存或启停后自动刷新更新信息。</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="n">7</span>
+          <div><strong>业务引用编码</strong><span>业务存储值编码而非显示名；下拉 / 筛选项仅展示启用中的字典值；排序影响管理列表与（若约定）业务选项顺序。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="gen-note" aria-label="生成结果说明">
+      <h3>生成结果说明</h3>
+      <ol>
+        <li>若类似功能已在项目中存在，再用本Skill时，结果会与预期有偏差。</li>
+        <li>AI生成结果存在一定随机性，存在微小差异为正常现象。</li>
+        <li>请自行核对交互界面，若存在明显偏差，可通过会话要求玄玑按规范进行调整。</li>
+        <li>本Skill生成结果后，用户可继续自行按需修改。</li>
+      </ol>
+    </aside>
+
+    <footer class="footer">字典管理 · 玄玑界面交互</footer>
+  </main>
+
+  <script>
+    function copyText(text) {
+      navigator.clipboard.writeText((text || '').trim()).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+    function openMockLightbox(frame) {
+      const body = document.getElementById('lightboxBody');
+      body.innerHTML = frame.innerHTML;
+      document.getElementById('lightbox').classList.add('show');
+      document.body.classList.add('lightbox-open');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('show');
+      document.body.classList.remove('lightbox-open');
+    }
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('nav-open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('nav-open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    document.querySelectorAll('.prompt-cell').forEach((cell) => {
+      cell.addEventListener('click', () => copyText(cell.dataset.copy || cell.textContent));
+    });
+    document.querySelectorAll('.adjust-copy').forEach((el) => {
+      el.addEventListener('click', () => copyText(el.dataset.copy || el.querySelector('code').textContent));
+    });
+    document.querySelectorAll('.ui-shot-frame').forEach((frame) => {
+      frame.addEventListener('click', () => openMockLightbox(frame));
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('.nav-list a');
+    function onScroll() {
+      const y = window.scrollY;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('scrollProgress').style.width = (h > 0 ? y / h * 100 : 0) + '%';
+      document.getElementById('backTop').classList.toggle('visible', y > 400);
+      let current = 'prompt';
+      sections.forEach((s) => { if (y >= s.offsetTop - 120) current = s.id; });
+      navLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    sections.forEach((s) => observer.observe(s));
+    navLinks.forEach((a) => a.addEventListener('click', () => { if (innerWidth <= 900) closeSidebar(); }));
+
+    (function () {
+      const glow = document.getElementById('bgGlow');
+      if (!glow || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let tx = innerWidth / 2, ty = innerHeight / 3, x = tx, y = ty;
+      document.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+      (function tick() {
+        x += (tx - x) * 0.035; y += (ty - y) * 0.035;
+        glow.style.left = x + 'px'; glow.style.top = y + 'px';
+        requestAnimationFrame(tick);
+      })();
+    })();
+  </script>
+</body>
+</html>

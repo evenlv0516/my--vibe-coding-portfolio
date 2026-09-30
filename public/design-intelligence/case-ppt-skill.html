@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>01 企业 PPT Skill · Design Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./case-detail-shared.css">
+  <!-- 通用版式见 CASE_DETAIL_SPEC.md；本页仅保留案例专属内容 -->
+</head>
+<body data-accent="purple">
+  <article class="case-page">
+    <div class="case-top">
+      <header class="case-nav">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK</a>
+        <div class="case-nav-meta">01 <span>/</span> 04</div>
+      </header>
+
+      <header class="case-hero case-hero-with-aside">
+        <div class="case-hero-copy">
+          <span class="case-hero-mark" aria-hidden="true">01</span>
+          <p class="case-kicker">01 / PROJECT</p>
+          <h1 class="case-title">企业 PPT Skill</h1>
+          <p class="case-lead">让内容生成、品牌规范与后续编辑，<br>处在同一条可控的交付链路中。</p>
+        </div>
+
+        <aside
+          class="skill-tree skill-tree-hero"
+          aria-label="Skill 结构目录"
+          style="width:clamp(540px, calc(540px + max(0px, 100vw - 1700px) * 0.65), 800px);max-width:100%;padding:14px 32px 12px;box-sizing:border-box"
+        >
+          <div class="skill-tree-head">
+            <strong>Skill 结构目录</strong>
+          </div>
+          <div class="skill-tree-body">
+            <div class="skill-tree-row is-root"><code>ecovacs-ppt-skills/</code></div>
+            <div class="skill-tree-row"><code>├─ SKILL.md</code><span>← Skill 主文件：工作流与品牌规范</span></div>
+            <div class="skill-tree-row"><code>├─ CLAUDE.md</code><span>← 快速上手与目录说明</span></div>
+            <div class="skill-tree-row"><code>├─ assets/</code></div>
+            <div class="skill-tree-row is-nested"><code>│  ├─ backgrounds/</code><span>← 品牌背景图（封面/内容/结尾）</span></div>
+            <div class="skill-tree-row is-nested"><code>│  └─ templates/</code><span>← 五类页面 HTML 模板</span></div>
+            <div class="skill-tree-row"><code>├─ references/</code><span>← 图表、数据分析等写法参考</span></div>
+            <div class="skill-tree-row"><code>└─ scripts/</code></div>
+            <div class="skill-tree-row is-nested"><code>   ├─ export-pptx.mjs</code><span>← HTML → PPTX 转换入口</span></div>
+            <div class="skill-tree-row is-nested"><code>   ├─ merge-slides.js</code><span>← 单页合并为完整演示</span></div>
+            <div class="skill-tree-row is-nested"><code>   └─ gen-pptx/</code><span>← 浏览器捕获与转换引擎</span></div>
+          </div>
+        </aside>
+      </header>
+    </div>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>一次输入，自主规划成型</h2>
+        <p>材料先落成大纲，再生成可演示的 HTML，最终转译为可继续编辑的 PPTX——每一步都留下可检查的中间产物。</p>
+      </div>
+      <div class="pipeline pipeline-rich" aria-label="生成链路">
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>01</span>
+            <strong>原始内容</strong>
+            <em>一句话 / 文档 / PPT</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-doc">
+              <div class="doc-stack">
+                <div class="doc-sheet doc-sheet-back"></div>
+                <div class="doc-sheet doc-sheet-front">
+                  <div class="doc-tag">BRIEF</div>
+                  <div class="doc-title"></div>
+                  <div class="doc-line"></div>
+                  <div class="doc-line short"></div>
+                  <div class="doc-line"></div>
+                  <div class="doc-line mid"></div>
+                  <div class="doc-line short"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich">
+          <div class="pipe-rich-copy">
+            <span>02</span>
+            <strong>逐页大纲</strong>
+            <em>结构与版式决策</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-outline">
+              <div class="outline-board">
+                <div class="outline-row"><span></span><i></i></div>
+                <div class="outline-row"><span></span><i></i></div>
+                <div class="outline-row is-active"><span></span><i></i></div>
+                <div class="outline-row"><span></span><i></i></div>
+                <div class="outline-row"><span></span><i></i></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich pipe-rich-html">
+          <div class="pipe-rich-copy">
+            <span>03</span>
+            <strong>HTML Slides</strong>
+            <em>可演示网页</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-browser">
+              <div class="browser-chrome">
+                <span></span><span></span><span></span>
+                <div class="browser-url">presentation.html</div>
+              </div>
+              <img src="./case-assets/ppt/html-slide-sample.png" alt="HTML Slides 生成示例">
+            </div>
+          </div>
+        </article>
+        <div class="pipe-arrow" aria-hidden="true">→</div>
+        <article class="pipe-rich pipe-rich-pptx">
+          <div class="pipe-rich-copy">
+            <span>04</span>
+            <strong>可编辑 PPTX</strong>
+            <em>原生对象交付</em>
+          </div>
+          <div class="pipe-rich-visual" aria-hidden="true">
+            <div class="prv prv-pptx-shot">
+              <img src="./case-assets/ppt/pptx-sample.png" alt="可编辑 PPTX 真实截图">
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="principle-panel principle-panel-below" aria-label="Skill 原理">
+        <div class="principle-head">
+          <span>HOW IT WORKS</span>
+        </div>
+
+        <div class="principle-layers">
+          <div class="principle-layer">
+            <div class="principle-tag">1.0 生成</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>大纲</i><b>→</b><i>风格</i><b>→</b><i>HTML Slides</i>
+            </div>
+            <p>锁定公司色、字体与形状，并固定封面 / 目录 / 章节 / 结束模板。将一句话、文档或原始 PPT，生成为品牌化 HTML 演示稿。</p>
+          </div>
+
+          <div class="principle-layer">
+            <div class="principle-tag">2.0 可编辑</div>
+            <div class="principle-flow" aria-hidden="true">
+              <i>活 DOM</i><b>→</b><i>JSON 树</i><b>→</b><i>原生 PPTX</i>
+            </div>
+            <p>递归序列化节点为可编辑对象，文本精确定位；带动画标记写入原生时序，使 PowerPoint 中可改、可动。</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>固定风格，不固定内容</h2>
+        <p>将颜色、字体、版式和模板沉淀为固定规则，让每一次生成都回到同一套公司视觉语言。</p>
+      </div>
+      <div class="token-row" aria-label="品牌视觉规则">
+        <div class="token"><i style="background:#2484C6"></i><span>#2484C6</span></div>
+        <div class="token"><i style="background:#1C2D5A"></i><span>#1C2D5A</span></div>
+        <div class="token"><i style="background:#1E5397"></i><span>#1E5397</span></div>
+        <div class="token"><i style="background:#203864"></i><span>正文 #203864</span></div>
+        <div class="token token-text"><span>Source Han Sans / Inter</span></div>
+      </div>
+      <div class="template-matrix">
+        <figure class="tpl">
+          <div class="tpl-slide">
+            <img src="./case-assets/ppt/tpl-cover.png" alt="封面模板">
+            <div class="tpl-label-on">封面</div>
+          </div>
+          <figcaption>Cover · 固定封面模板</figcaption>
+        </figure>
+        <figure class="tpl">
+          <div class="tpl-slide">
+            <img src="./case-assets/ppt/tpl-toc.png" alt="目录模板">
+            <div class="tpl-label-on">目录</div>
+          </div>
+          <figcaption>TOC · 固定目录模板</figcaption>
+        </figure>
+        <figure class="tpl">
+          <div class="tpl-slide">
+            <img src="./case-assets/ppt/tpl-section.png" alt="章节起始页模板">
+            <div class="tpl-label-on">章节页</div>
+          </div>
+          <figcaption>Section · 固定章节起始模板</figcaption>
+        </figure>
+        <figure class="tpl">
+          <div class="tpl-slide">
+            <img src="./case-assets/ppt/tpl-content.png" alt="内容页模板">
+            <div class="tpl-label-on">内容页</div>
+          </div>
+          <figcaption>Content · 固定内容页模板</figcaption>
+        </figure>
+        <figure class="tpl">
+          <div class="tpl-slide">
+            <img src="./case-assets/ppt/end.jpg" alt="结束页模板">
+            <div class="tpl-label-on">结束页</div>
+          </div>
+          <figcaption>End · 固定结束页模板</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="case-block">
+      <div class="case-block-copy">
+        <h2>生成可编辑的html</h2>
+        <p>生成结果不是一次性的静态画面。用户可以在浏览器中继续调整文字、颜色与位置。</p>
+      </div>
+      <div class="edit-stage">
+        <div class="edit-main">
+          <div class="edit-browser">
+            <div class="browser-chrome">
+              <span></span><span></span><span></span>
+              <div class="browser-url">presentation.html · edit</div>
+            </div>
+            <div class="edit-slide">
+              <img src="./case-assets/ppt/edit-slide-sample.jpg" width="1843" height="1037" alt="可编辑 HTML 演示页示例">
+              <div class="edit-hotspot edit-hot-text" title="文字可修改"><span>文字</span></div>
+              <div class="edit-hotspot edit-hot-color" title="颜色可修改"><span>颜色</span></div>
+              <div class="edit-hotspot edit-hot-structure" title="位置可修改"><span>位置</span></div>
+              <div class="edit-mode-badge">编辑模式</div>
+            </div>
+          </div>
+        </div>
+        <aside class="edit-panel" aria-label="属性编辑面板示意">
+          <div class="edit-panel-frame">
+          <header class="edit-panel-head">
+            <strong>属性编辑</strong>
+            <span class="edit-panel-close" aria-hidden="true">×</span>
+          </header>
+          <div class="edit-panel-body">
+            <div class="edit-selected">已选中 &lt;p&gt; · 类名: _edit_selected</div>
+
+            <section class="edit-group">
+              <h3>内容</h3>
+              <label>文本内容 (仅修改文字)</label>
+              <textarea readonly rows="4">Pragmatic Engineer 调查显示 70% 开发者同时用 2-4 款工具，验证“互补而非替代”</textarea>
+            </section>
+
+            <section class="edit-group">
+              <h3>文字</h3>
+              <label>文字颜色</label>
+              <div class="edit-color-row">
+                <i style="background:#1e5397"></i>
+                <input type="text" value="#1e5397" readonly>
+              </div>
+              <label>字号</label>
+              <div class="edit-unit-row">
+                <input type="text" value="15" readonly>
+                <em>px</em>
+              </div>
+              <label>文字布局</label>
+              <div class="edit-select-row">左对齐</div>
+            </section>
+
+            <section class="edit-group">
+              <h3>位置与尺寸</h3>
+              <div class="edit-pair">
+                <div>
+                  <label>X 位置</label>
+                  <div class="edit-unit-row">
+                    <input type="text" value="" readonly placeholder="—">
+                    <em>px</em>
+                  </div>
+                </div>
+                <div>
+                  <label>Y 位置</label>
+                  <div class="edit-unit-row">
+                    <input type="text" value="" readonly placeholder="—">
+                    <em>px</em>
+                  </div>
+                </div>
+              </div>
+              <div class="edit-pair">
+                <div>
+                  <label>宽度</label>
+                  <div class="edit-unit-row">
+                    <input type="text" value="827" readonly>
+                    <em>px</em>
+                  </div>
+                </div>
+                <div>
+                  <label>高度</label>
+                  <div class="edit-unit-row">
+                    <input type="text" value="20" readonly>
+                    <em>px</em>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <footer class="edit-panel-foot">
+            <button type="button" class="edit-btn-ghost" tabindex="-1">取消修改</button>
+            <button type="button" class="edit-btn-primary" tabindex="-1">保存并下载</button>
+          </footer>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="case-block case-block-last">
+      <div class="case-block-copy">
+        <h2>从生成物，到可交接的交付</h2>
+        <p class="case-block-lead-nowrap">浏览器里能改，解决了生成与预览；但评审、归档和高频二次修改，仍发生在 PowerPoint。2.0 让编辑权回到 PPT 的使用习惯里。</p>
+      </div>
+
+      <div class="pptx-principle">
+        <div class="pptx-principle-head">
+          <h3>HTML → PPTX 怎么转</h3>
+          <p>不解析 HTML 源码，而是在真实浏览器里渲染页面，再把渲染结果翻译成可编辑的 PowerPoint 对象。</p>
+        </div>
+        <div class="pptx-flow" aria-label="转换链路">
+          <i>浏览器渲染</i><b>→</b><i>捕获 DOM</i><b>→</b><i>转成原生对象</i><b>→</b><i>写入动画并校验</i>
+        </div>
+        <div class="pptx-detail-grid pptx-detail-grid-3">
+          <article class="pptx-detail" style="padding:16px 14px 12px">
+            <span>01</span>
+            <strong>页面内捕获</strong>
+            <p style="margin-top:3px">Playwright 打开幻灯片，递归序列化为 JSON 树；文本用行盒精确取位。</p>
+          </article>
+          <article class="pptx-detail" style="padding:16px 14px 12px">
+            <span>02</span>
+            <strong>翻译为原生对象</strong>
+            <p style="margin-top:3px">形状、文字、图片分别映射为 PptxGenJS 对象，保留计算样式与位置。</p>
+          </article>
+          <article class="pptx-detail" style="padding:16px 14px 12px">
+            <span>03</span>
+            <strong>动画真正可播</strong>
+            <p style="margin-top:3px">按 data-anim 写入原生时序；再校验翻页、尺寸与备注，输出可供 Agent 读取的结果。</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="compare compare-transform">
+        <figure class="compare-card compare-card-html">
+          <div class="compare-head">HTML · Live Capture</div>
+          <div class="compare-frame">
+            <div class="devtools-window" aria-label="浏览器开发者工具模拟">
+              <div class="browser-chrome">
+                <span></span><span></span><span></span>
+                <div class="browser-url">localhost:4173/presentation.html</div>
+                <div class="devtools-badge">DevTools</div>
+              </div>
+              <div class="devtools-body">
+                <div class="devtools-viewport">
+                  <div class="devtools-slide">
+                    <img src="./case-assets/ppt/html-slide-sample.png" alt="HTML Slides 封面">
+                    <div class="dom-scan-track" aria-hidden="true"><i class="dom-scan-line"></i></div>
+                    <div class="dom-hilite dom-hilite-b" aria-hidden="true"></div>
+                    <div class="dom-hilite dom-hilite-c" aria-hidden="true"></div>
+                    <div class="dom-hilite dom-hilite-d" aria-hidden="true"></div>
+                    <div class="dom-hilite dom-hilite-e" aria-hidden="true"></div>
+                  </div>
+                  <div class="dom-status"><i></i><span>Capturing DOM…</span></div>
+                </div>
+                <aside class="devtools-panel" aria-hidden="true">
+                  <div class="devtools-panel-tabs">
+                    <b>Elements</b><span>Console</span><span>Network</span>
+                  </div>
+                  <pre class="devtools-tree"><span class="dt-muted">▼</span> <span class="dt-tag">&lt;section</span> <span class="dt-attr">class</span>=<span class="dt-val">"slide"</span><span class="dt-tag">&gt;</span>
+  <span class="dt-active">▸ &lt;h1&gt;Codex vs Cursor…&lt;/h1&gt;</span>
+  <span class="dt-tag">▸ &lt;p</span> <span class="dt-attr">class</span>=<span class="dt-val">"sub"</span><span class="dt-tag">&gt;</span>
+  <span class="dt-tag">▸ &lt;img</span> <span class="dt-attr">src</span>=<span class="dt-val">"cover…"</span><span class="dt-tag">&gt;</span>
+<span class="dt-muted">▼</span> <span class="dt-tag">&lt;style&gt;</span> <span class="dt-muted">computed…</span>
+<span class="dt-json">{ "x": 48, "y": 120, "w": 620 }</span></pre>
+                </aside>
+              </div>
+            </div>
+          </div>
+          <figcaption>真实浏览器渲染 · 递归捕获可编辑 DOM 树</figcaption>
+        </figure>
+
+        <div class="compare-bridge compare-bridge-motion" aria-hidden="true">
+          <div class="bridge-label">DOM → Native</div>
+          <svg class="bridge-svg" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="bridge-path-bg" d="M12 20 H136" />
+            <path class="bridge-path" d="M12 20 H136" />
+            <path class="bridge-head" d="M128 10 L148 20 L128 30 Z" />
+            <circle class="bridge-dot bridge-dot-1" r="3.5" cx="12" cy="20" />
+            <circle class="bridge-dot bridge-dot-2" r="2.5" cx="12" cy="20" />
+          </svg>
+          <ol class="bridge-steps">
+            <li>捕获</li>
+            <li>映射</li>
+            <li>写出</li>
+          </ol>
+        </div>
+
+        <figure class="compare-card compare-card-pptx">
+          <div class="compare-head">PPTX · Editable Output</div>
+          <div class="compare-frame">
+            <div class="compare-body compare-pptx-shot">
+              <img src="./case-assets/ppt/pptx-sample.png" alt="可编辑 PPTX 截图">
+              <div class="edit-mode-badge edit-mode-badge-left">原生对象 · 可改可播</div>
+            </div>
+          </div>
+          <figcaption>导出后仍可改文字、形状，并播放原生动画</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div
+      class="case-bottom"
+      style="--case-bottom-pad-top:100px;--case-bottom-pad-bottom:12px;--case-footer-shift:-32px"
+    >
+      <footer class="case-page-footer">
+        <a class="back-link" href="./design-intelligence-mockup.html#chapter">← BACK TO CASES</a>
+        <span>01 企业 PPT Skill</span>
+      </footer>
+    </div>
+  </article>
+  <script src="./page-transition.js" defer></script>
+</body>
+</html>

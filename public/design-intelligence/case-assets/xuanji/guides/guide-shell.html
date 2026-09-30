@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>玄玑使用指南</title>
+  <style>
+    :root {
+      --sidebar-w: 264px;
+      --header-pad: 24px;
+      --primary: #3877f5;
+      --primary-dark: #2563eb;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --feedback: #f97316;
+      --topnav-height: 56px;
+      --font: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: #fff;
+      color: var(--text);
+    }
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 16px rgba(30, 41, 59, 0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--topnav-height);
+      width: 100%;
+      gap: 16px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      flex: 1;
+      height: 100%;
+      gap: 0;
+    }
+    .header-leading {
+      flex: 0 0 calc(var(--sidebar-w) - var(--header-pad));
+      max-width: calc(var(--sidebar-w) - var(--header-pad));
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      height: 100%;
+      padding-right: 0;
+    }
+    .topnav-brand .ecovacs-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-divider {
+      width: 1px; height: 20px; background: #E2E8F0; flex-shrink: 0;
+    }
+    .guide-brand {
+      display: inline-flex; align-items: center; gap: 6px;
+      min-width: 0; flex-shrink: 0;
+      text-decoration: none;
+      margin: 0; padding: 0;
+      user-select: none;
+    }
+    .guide-brand-ico {
+      width: 16px; height: 16px; display: block; flex-shrink: 0;
+      color: #2484C6;
+    }
+    .guide-brand-text {
+      font-size: 14px; font-weight: 600; line-height: 1.2;
+      white-space: nowrap;
+      background-image: linear-gradient(135deg, #2484C6 0%, #1C2D5A 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+
+
+    .header-right {
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0; height: 100%;
+      margin-left: 12px;
+    }
+    .header-right a {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; box-sizing: border-box;
+      text-decoration: none; font-size: 14px; font-weight: 400;
+      white-space: nowrap; line-height: 1;
+      padding: 0 12px; border-radius: 8px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .header-right .feedback {
+      color: #D46B08;
+    }
+    .header-right .feedback:hover {
+      background: #FFF7E8;
+      opacity: 1;
+    }
+    .header-right .feedback-ico,
+    .header-right .feedback svg {
+      width: 16px; height: 16px; flex-shrink: 0; display: block;
+    }
+    .header-right .back-xuanji {
+      color: #4E5969;
+    }
+    .header-right .back-xuanji:hover {
+      background: #F5F7FA;
+      opacity: 1;
+    }
+
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      height: 100%;
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      gap: 0;
+      height: 100%;
+    }
+    .nav-list a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: var(--topnav-height);
+      padding: 0 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s;
+      background: transparent;
+      border: 0;
+      font-family: inherit;
+    }
+    .nav-list a:hover { color: var(--primary-dark); }
+    .nav-list a.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      .header-leading {
+        flex: 0 1 auto;
+        max-width: none;
+      }
+
+      .header-inner { padding: 0 16px; }
+      .nav-list a { padding: 0 10px; }
+      .header-right { gap: 12px; }
+    }
+
+    .frame-wrap {
+      position: fixed;
+      top: var(--topnav-height);
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      overflow: hidden;
+    }
+    .frame-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 0.28s ease;
+    }
+    .frame-wrap iframe.is-active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 1;
+    }
+    .nav-list a {
+      transition: color 0.2s ease;
+    }
+    .nav-list a.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .nav-list a.active::after {
+      content: "";
+      position: absolute;
+      left: 14px; right: 14px;
+      bottom: 0;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px 1px 0 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .frame-wrap iframe {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="topbar">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="header-leading">
+        <a class="topnav-brand" href="#" aria-label="ECOVACS">
+            <svg class="ecovacs-logo" fill="none" viewBox="0 0 174.286 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <g id="logo">
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="url(#ecovacs_grad_nav)" d="M33.0105 39.7332C24.8772 47.8654 11.697 47.8654 3.56368 39.7332C2.7569 38.9139 1.43917 38.9042 0.620441 39.7115C-0.198287 40.5188 -0.207976 41.8373 0.5988 42.6566L0.620441 42.6782L0.645689 42.7035C10.3958 52.4322 26.1747 52.4322 35.9248 42.7035L35.9537 42.6746L35.9789 42.6494C36.5002 42.1188 36.6989 41.3502 36.5003 40.6332C36.3017 39.9162 35.7359 39.3597 35.0161 39.1733C34.2962 38.9869 33.5317 39.199 33.0105 39.7296M0.649296 7.27969C-0.165447 8.09096 -0.168677 9.40951 0.642083 10.2248C1.45284 11.04 2.77057 11.0432 3.58532 10.232C7.49781 6.33276 12.7984 4.14892 18.3204 4.1611C23.8423 4.17328 29.1332 6.3805 33.0285 10.2969C33.6224 10.8942 34.5175 11.0745 35.2961 10.7536C36.0747 10.4328 36.5834 9.67419 36.5849 8.83163C36.5855 8.27992 36.3676 7.75045 35.9789 7.35909C31.31 2.6526 24.9578 0.00388956 18.3303 1.85571e-05H18.2762C11.6677 -0.00804484 5.32677 2.61195 0.649296 7.2833" />
+                <path fill="#1B384F" d="M162.834 20.8357H174.278V16.6671H162.834C159.959 16.6671 157.629 18.9988 157.629 21.8751C157.629 24.7514 159.959 27.0831 162.834 27.0831H169.081C169.467 27.0603 169.835 27.2537 170.035 27.5852C170.235 27.9167 170.235 28.3319 170.035 28.6635C169.835 28.995 169.467 29.1883 169.081 29.1656H157.629V33.3341H169.081C171.955 33.3341 174.286 31.0024 174.286 28.1261C174.286 25.2498 171.955 22.9181 169.081 22.9181H162.834C162.258 22.9181 161.791 22.4511 161.791 21.8751C161.791 21.299 162.258 20.832 162.834 20.832" />
+                <path fill="#1B384F" d="M77.4187 25.0006C77.4187 20.3981 73.6899 16.6671 69.0903 16.6671H68.2571C63.6575 16.6671 59.9288 20.3981 59.9288 25.0006C59.9288 29.6031 63.6575 33.3341 68.2571 33.3341H69.0903C73.6899 33.3341 77.4187 29.6031 77.4187 25.0006ZM69.0903 29.1656H68.2571C66.005 29.0992 64.2137 27.2533 64.2137 24.9988C64.2137 22.7443 66.005 20.8984 68.2571 20.832H69.0903C70.6073 20.7874 72.0285 21.5716 72.8001 22.8792C73.5718 24.1868 73.5718 25.8108 72.8001 27.1184C72.0285 28.426 70.6073 29.2103 69.0903 29.1656Z" />
+                <path fill="#1B384F" d="M52.4336 29.1656H44.1053C42.5883 29.2103 41.1671 28.426 40.3955 27.1184C39.6238 25.8108 39.6238 24.1868 40.3955 22.8792C41.1671 21.5716 42.5883 20.7874 44.1053 20.832H52.4336V16.6671H44.1053C39.5057 16.6671 35.7769 20.3981 35.7769 25.0006C35.7769 29.6031 39.5057 33.3341 44.1053 33.3341H52.4336V29.1656Z" />
+                <path fill="#1B384F" d="M25.3674 29.1656H17.0391C15.5221 29.2103 14.1009 28.426 13.3293 27.1184C12.5576 25.8108 12.5576 24.1868 13.3293 22.8792C14.1009 21.5716 15.5221 20.7874 17.0391 20.832H25.3674L28.2818 16.6671H17.0391C12.4395 16.6671 8.71073 20.3981 8.71073 25.0006C8.71073 29.6031 12.4395 33.3341 17.0391 33.3341H28.2818L25.3674 29.1656Z" />
+                <path fill="#1B384F" d="M24.5342 22.9181H18.2871C17.1377 22.9181 16.2059 23.8505 16.2059 25.0006C16.2059 26.1507 17.1377 27.0831 18.2871 27.0831H24.5342C25.6836 27.0831 26.6154 26.1507 26.6154 25.0006C26.6154 23.8505 25.6836 22.9181 24.5342 22.9181Z" />
+                <path fill="#1B384F" d="M150.134 29.1656H141.816C140.288 29.2293 138.848 28.4496 138.064 27.1348C137.281 25.8199 137.281 24.1813 138.064 22.8665C138.848 21.5516 140.288 20.772 141.816 20.8357H150.145V16.6671H141.816C137.217 16.6671 133.488 20.3981 133.488 25.0006C133.488 29.6031 137.217 33.3341 141.816 33.3341H150.145L150.134 29.1656Z" />
+                <path fill="#1B384F" d="M94.8905 24.9212L93.2025 29.5626L91.5144 24.9212L88.5135 16.6671H84.0806L89.0654 30.3819L89.1303 30.5587C89.6133 31.7993 90.634 32.7529 91.904 33.1501C92.7507 33.4147 93.6579 33.4147 94.5046 33.1501C95.7458 32.7638 96.7506 31.8443 97.2458 30.6417L97.3757 30.2808L102.324 16.6779H97.8915L94.8905 24.9212Z" />
+                <path fill="#1B384F" d="M116.005 25.08L117.693 20.4387L119.381 25.08L122.382 33.3342H126.815L121.83 19.6194L121.766 19.4425C121.284 18.201 120.263 17.247 118.992 16.8512C118.57 16.7189 118.131 16.652 117.69 16.6527C115.91 16.6543 114.309 17.7387 113.646 19.392L113.52 19.7529L108.572 33.3558H113.001L116.005 25.08Z" />
+              </g>
+              <defs>
+                <linearGradient id="ecovacs_grad_nav" x1="3.44903" x2="33.3172" y1="24.5521" y2="24.5521" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#1B7FC3" />
+                  <stop offset="0.39" stop-color="#1B5A94" />
+                  <stop offset="0.79" stop-color="#1B3869" />
+                  <stop offset="1" stop-color="#1B2B58" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </a>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <a class="guide-brand" href="#" aria-label="玄玑指南">
+            <svg class="guide-brand-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="guide-brand-text">玄玑指南</span>
+          </a>
+                  </div>
+        <nav class="nav-bar">
+          <ul class="nav-list" id="topTabs">
+            <li>
+              <a href="AI管理能力功能.html" class="active" data-top="ai">AI管理能力</a>
+            </li>
+            <li>
+              <a href="字典管理.html" data-top="dict">字典管理</a>
+            </li>
+            <li>
+              <a href="导入功能.html" data-top="import">导入功能</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="header-right">
+        <a class="feedback" href="#" title="反馈">
+          <svg class="feedback-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m3 11 18-5v12L3 14v-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          反馈
+        </a>
+        <a class="back-xuanji" href="#">返回玄玑</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="frame-wrap" id="frameWrap">
+    <iframe class="is-active" data-top="ai" title="AI管理能力" src="AI管理能力功能.html"></iframe>
+    <iframe data-top="dict" title="字典管理" src="字典管理.html"></iframe>
+    <iframe data-top="import" title="导入功能" src="导入功能.html"></iframe>
+  </div>
+  <script>
+    (function () {
+      var tabs = document.getElementById("topTabs");
+      var wrap = document.getElementById("frameWrap");
+      if (!tabs || !wrap) return;
+
+      var frames = Array.prototype.slice.call(wrap.querySelectorAll("iframe[data-top]"));
+      var frameMap = {};
+      frames.forEach(function (frame) {
+        frameMap[frame.getAttribute("data-top")] = frame;
+      });
+
+      function activate(link) {
+        var key = link.getAttribute("data-top");
+        var frame = frameMap[key];
+        if (!frame) return;
+
+        tabs.querySelectorAll("a[data-top]").forEach(function (a) {
+          a.classList.toggle("active", a === link);
+        });
+        frames.forEach(function (f) {
+          f.classList.toggle("is-active", f === frame);
+        });
+      }
+
+      tabs.addEventListener("click", function (e) {
+        var link = e.target.closest("a[data-top]");
+        if (!link) return;
+        e.preventDefault();
+        activate(link);
+      });
+    })();
+  </script>
+</body>
+</html>

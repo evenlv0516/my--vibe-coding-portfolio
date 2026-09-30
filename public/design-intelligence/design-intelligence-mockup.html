@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Intelligence Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="./fonts/SmileySans-Oblique.ttf.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@600;700;800&family=ZCOOL+QingKe+HuangYou&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@600;700;800&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: "Smiley Sans";
+      src: url("./fonts/SmileySans-Oblique.ttf.woff2") format("woff2"),
+           url("./fonts/SmileySans-Oblique.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    html,body{margin:0;background:#000;min-height:100%}
+    html{opacity:0;animation:di-page-fallback 0s linear 1s forwards}
+    @keyframes di-page-fallback{to{opacity:1}}
+    html.di-page-ready{opacity:1;animation:none;transition:opacity .22s ease}
+    html.di-fonts-pending #di-mockup{opacity:0}
+    html.di-fonts-ready #di-mockup{opacity:1;transition:opacity .2s ease}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+    body:has(#di-mockup[data-view="chapter"]),
+    body:has(#di-mockup[data-view^="case-"]){
+      display:block;
+      align-items:stretch;
+      justify-content:flex-start;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.add('di-fonts-pending');
+    // If page-transition.js fails to load, force visible after 1s
+    setTimeout(function () {
+      document.documentElement.classList.add('di-page-ready');
+    }, 1000);
+  </script>
+</head>
+<body>
+<div id="di-mockup" data-view="home">
+  <div class="mockup-shell">
+    <main>
+      <!-- 首页大卡：仅保留 16:9 hero 构图，便于后续导出/替换为静态图 -->
+      <section class="screen screen-home is-active" data-screen="home" aria-label="首页 AI 项目卡">
+        <div class="hero-scale">
+        <article class="hero-card">
+          <div class="angle angle-a"></div>
+          <div class="angle angle-b"></div>
+          <div class="hero-grid"></div>
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="live-dot"></span> DESIGN SYSTEMS / AI</p>
+            <h1>Design<br>Intelligence</h1>
+            <p class="chinese-title">设计智能化</p>
+            <p class="hero-description">从用 AI 加速界面探索与产品交付，<br>到为 AI 构建设计规范与可复用能力。</p>
+            <button class="primary-cta" type="button" data-screen-target="chapter">EXPLORE <span>→</span></button>
+          </div>
+          <div class="hero-visual" aria-hidden="true">
+            <div class="flow-stage">
+            <div class="visual-label label-top">FROM INPUT TO DELIVERY</div>
+            <svg class="flow-lines" viewBox="0 0 760 660" width="760" height="660">
+              <line x1="316" y1="140" x2="420" y2="300" />
+              <line x1="420" y1="350" x2="368" y2="440" />
+              <circle cx="368" cy="220" r="5" />
+              <circle cx="394" cy="395" r="5" />
+            </svg>
+            <div class="node node-root"><span>01</span><b>INPUT</b><em>ideas · docs · interfaces</em></div>
+            <div class="node node-mid"><span>02</span><b>DESIGN</b><em>systems · prompts · flows</em></div>
+            <div class="node node-output"><span>03</span><b>DELIVER</b><em>prototype · code · guide</em><i class="node-glow"></i></div>
+            <div class="visual-label label-bottom">4 CASE STUDIES / 01—04</div>
+            </div>
+          </div>
+          <div class="hero-footer">
+            <a class="footer-cta portfolio-back" data-close-portfolio href="../">← BACK TO PORTFOLIO</a>
+            <button class="footer-cta" type="button" data-screen-target="chapter">CLICK TO EXPLORE →</button>
+          </div>
+        </article>
+        </div>
+      </section>
+
+      <section class="screen screen-chapter" data-screen="chapter" aria-label="Design Intelligence 章节页">
+        <div class="chapter-head">
+          <a class="back-link" data-close-portfolio href="../">← BACK TO PORTFOLIO</a>
+          <div class="chapter-index">DESIGN INTELLIGENCE <span>/</span> 01—04</div>
+        </div>
+
+        <div class="chapter-hero">
+          <div>
+            <p class="eyebrow"><span class="live-dot"></span> AI-ENABLED DESIGN & DELIVERY</p>
+            <h2>Design<br>Intelligence</h2>
+            <p class="chinese-title">设计智能化</p>
+          </div>
+          <p class="chapter-intro">AI 并非只存在于单一项目中。<br>它参与内容生成、界面设计、交互验证与规范沉淀，<br>也需要被设计成更可靠、更可复用的产品能力。</p>
+        </div>
+
+        <div class="case-grid">
+          <a class="case-card case-purple" href="./case-ppt-skill.html" aria-label="查看企业 PPT Skill 案例">
+            <span class="card-number">01</span>
+            <span class="card-kicker">CONTENT / SYSTEM</span>
+            <strong>企业 PPT Skill</strong>
+            <small>把内容生成、品牌规范与可编辑交付整合为一条工作链路。</small>
+            <span class="case-arrow">↗</span>
+            <span class="card-art art-ppt"><i></i><i></i><i></i><i></i></span>
+          </a>
+          <a class="case-card case-blue" href="./case-login.html" aria-label="查看统一身份登录页案例">
+            <span class="card-number">02</span>
+            <span class="card-kicker">INTERFACE / DELIVERY</span>
+            <strong>统一身份登录页</strong>
+            <small>以 AI 快速建立界面初稿，再完成视觉、交互与响应式打磨。</small>
+            <span class="case-arrow">↗</span>
+            <span class="card-art art-login"><i></i><i></i><i></i></span>
+          </a>
+          <a class="case-card case-cyan" href="./case-permission.html" aria-label="查看权限申请体验优化案例">
+            <span class="card-number">03</span>
+            <span class="card-kicker">FLOW / PROTOTYPE</span>
+            <strong>权限申请体验优化</strong>
+            <small>切入存量功能，用 Cursor 做出可交互 Mock，并交付可集成代码包。</small>
+            <span class="case-arrow">↗</span>
+            <span class="card-art art-permission"><i></i><i></i><i></i><i></i><i></i></span>
+          </a>
+          <a class="case-card case-violet" href="./case-xuanji.html" aria-label="查看玄玑平台 Spec 与用户指南案例">
+            <span class="card-number">04</span>
+            <span class="card-kicker">SPEC / GUIDANCE</span>
+            <strong>玄玑平台 Spec<br>与用户指南</strong>
+            <small>将约束 AI 的界面规则，转化为人和 Agent 都能理解的标准能力。</small>
+            <span class="case-arrow">↗</span>
+            <span class="card-art art-spec"><i></i><i></i><i></i><i></i></span>
+          </a>
+        </div>
+
+        <footer class="chapter-footer"><span>YIFAN.LV / UI·UX DESIGNER</span><span>SELECT A CASE ↗</span></footer>
+      </section>
+
+      <!-- 四个案例详情页已拆为独立亮色 HTML：case-ppt-skill / case-login / case-permission / case-xuanji -->
+
+    </main>
+  </div>
+</div>
+
+<style>
+  #di-mockup {
+    --canvas: #000000;
+    --ink: #ffffff;
+    --muted: #b2b6bd;
+    --subtle: #656a76;
+    --surface-1: #15181e;
+    --surface-2: #1f232b;
+    --line: #3b3d45;
+    --line-soft: #252830;
+    --purple: #7b42bc;
+    --purple-bright: #911ced;
+    --violet: #4F58C8;
+    --cyan: #14c6cb;
+    --blue: #3877f5;
+    --font-display: "Unbounded", "Smiley Sans", "ZCOOL QingKe HuangYou", sans-serif;
+    --font-ui: "Space Grotesk", "Smiley Sans", "ZCOOL QingKe HuangYou", sans-serif;
+    --font-zh: "Smiley Sans", "ZCOOL QingKe HuangYou", "Space Grotesk", sans-serif;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: var(--font-ui);
+    flex: 0 0 auto;
+    position: relative;
+    container-type: inline-size;
+    container-name: di-canvas;
+  }
+
+  /* 首页大卡：保持 16:9 画布 */
+  #di-mockup[data-view="home"] {
+    width: min(100vw, 1920px);
+    aspect-ratio: 16 / 9;
+    height: auto;
+  }
+  #di-mockup[data-view="home"] .mockup-shell {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  /* 章节页 / 详情页：取消 16:9，整页自适应 */
+  #di-mockup[data-view="chapter"],
+  #di-mockup[data-view^="case-"] {
+    width: 100%;
+    max-width: none;
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  #di-mockup[data-view="chapter"] .mockup-shell,
+  #di-mockup[data-view^="case-"] .mockup-shell {
+    position: relative;
+    inset: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+  #di-mockup[data-view="chapter"] main,
+  #di-mockup[data-view^="case-"] main {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  #di-mockup * { box-sizing: border-box; }
+  #di-mockup button { font: inherit; }
+  #di-mockup .mockup-shell {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--canvas);
+  }
+  #di-mockup main { flex: 1; min-height: 0; height: 100%; width: 100%; }
+  #di-mockup .brand, #di-mockup .header-link, #di-mockup .back-link { border: 0; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; }
+  #di-mockup a.back-link, #di-mockup a.footer-cta { color: var(--muted); }
+  #di-mockup a.back-link:hover, #di-mockup a.footer-cta:hover { color: var(--ink); }
+  #di-mockup .screen { display: none; }
+  #di-mockup .screen.is-active { display: block; height: 100%; width: 100%; }
+  #di-mockup[data-view="chapter"] .screen.is-active,
+  #di-mockup[data-view^="case-"] .screen.is-active { height: auto; min-height: 100%; }
+
+  /* 首页：内部仍按 1920×1080 排版，整体等比缩放入 16:9 画布 */
+  #di-mockup .screen-home.is-active { display: block; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+  #di-mockup .hero-scale { width: 100%; height: 100%; overflow: hidden; }
+  #di-mockup .hero-card {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: linear-gradient(128deg, #15181e 0%, #15181e 42%, #10111a 100%);
+    border: 0;
+    border-radius: 0;
+    transform: scale(calc(100cqi / 1920));
+    transform-origin: top left;
+  }
+  #di-mockup .angle { position: absolute; z-index: 0; pointer-events: none; }
+  #di-mockup .angle-a {
+    width: 1280px;
+    height: 920px;
+    top: -420px;
+    right: -180px;
+    background: linear-gradient(135deg, rgba(145, 28, 237, .95), rgba(123, 66, 188, .18) 55%, rgba(123, 66, 188, 0) 78%);
+    transform: rotate(-14deg);
+    filter: blur(2px);
+  }
+  #di-mockup .angle-b {
+    width: 1180px;
+    height: 420px;
+    right: -220px;
+    bottom: -60px;
+    border: 1px solid rgba(145, 28, 237, .55);
+    transform: rotate(-14deg);
+  }
+  #di-mockup .hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .55;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(90deg, #000 28%, transparent 78%);
+  }
+
+  /* 左：文案块 — 拉开层级 */
+  #di-mockup .hero-copy {
+    position: absolute;
+    z-index: 2;
+    left: 160px;
+    top: 220px;
+    width: 740px;
+  }
+  #di-mockup .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    margin: 0 0 40px;
+  }
+  #di-mockup .live-dot {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+    background: var(--purple-bright);
+    box-shadow: 0 0 16px rgba(145, 28, 237, .9);
+  }
+  #di-mockup h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 96px;
+    line-height: 1.08;
+    letter-spacing: -2.4px;
+    font-weight: 700;
+  }
+  #di-mockup h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 74px;
+    line-height: 1.02;
+    letter-spacing: -3.2px;
+    font-weight: 700;
+  }
+  #di-mockup .chinese-title {
+    margin: 36px 0 0;
+    color: rgba(178, 182, 189, .92);
+    font-family: var(--font-zh);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: .18em;
+  }
+  #di-mockup .hero-description {
+    color: var(--muted);
+    font-family: var(--font-zh);
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.9;
+    letter-spacing: .04em;
+    margin: 32px 0 52px;
+    max-width: 500px;
+  }
+  #di-mockup .primary-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    min-width: 176px;
+    padding: 15px 20px;
+    color: #000;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .8px;
+  }
+  #di-mockup .primary-cta span { float: none; font-size: 18px; line-height: 1; }
+
+  /* 右：流程示意（略放大） */
+  #di-mockup .hero-visual {
+    position: absolute;
+    z-index: 2;
+    left: 1020px;
+    top: 130px;
+    width: 820px;
+    height: 720px;
+    border-left: 1px solid rgba(255,255,255,.16);
+  }
+  #di-mockup .flow-stage {
+    position: relative;
+    width: 760px;
+    height: 660px;
+    margin-left: 12px;
+    transform: scale(1.08);
+    transform-origin: top left;
+  }
+  #di-mockup .visual-label {
+    position: absolute;
+    color: var(--subtle);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    font-weight: 600;
+  }
+  #di-mockup .label-top {
+    top: 0;
+    left: 36px;
+    color: rgba(255, 255, 255, .35);
+  }
+  #di-mockup .label-bottom { bottom: 0; right: 8px; }
+  #di-mockup .node {
+    position: absolute;
+    z-index: 2;
+    width: 268px;
+    padding: 20px 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-top-color: rgba(255, 255, 255, .28);
+    border-left-color: rgba(255, 255, 255, .22);
+    background:
+      linear-gradient(155deg, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, .03) 34%, rgba(255, 255, 255, 0) 58%),
+      linear-gradient(180deg, rgba(42, 46, 58, .55) 0%, rgba(18, 20, 28, .72) 100%);
+    border-radius: 10px;
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow:
+      0 10px 28px rgba(0, 0, 0, .32),
+      0 1px 0 rgba(255, 255, 255, .06),
+      inset 0 1px 0 rgba(255, 255, 255, .16),
+      inset 0 -10px 24px rgba(0, 0, 0, .18);
+  }
+  #di-mockup .node::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 18%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+    pointer-events: none;
+  }
+  #di-mockup .node::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(125deg, rgba(255, 255, 255, .08) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  #di-mockup .node > * { position: relative; z-index: 1; }
+  #di-mockup .node-output { overflow: visible; }
+  #di-mockup .node-output::after { border-radius: 10px; }
+  #di-mockup .node span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--purple-bright);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .6px;
+  }
+  #di-mockup .node b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: .2px;
+    font-weight: 700;
+  }
+  #di-mockup .node em {
+    display: block;
+    margin-top: 8px;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-style: normal;
+    line-height: 1.35;
+  }
+  #di-mockup .node-root { left: 48px; top: 64px; }
+  #di-mockup .node-mid { left: 420px; top: 250px; }
+  #di-mockup .node-output { left: 100px; top: 440px; }
+  #di-mockup .node-glow {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--purple-bright);
+    box-shadow: 0 0 18px rgba(145,28,237,.95);
+  }
+  #di-mockup .flow-lines {
+    position: absolute;
+    inset: 0;
+    width: 760px;
+    height: 660px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  #di-mockup .flow-lines line {
+    stroke: rgba(145, 28, 237, .85);
+    stroke-width: 1.5;
+  }
+  #di-mockup .flow-lines circle {
+    fill: var(--purple-bright);
+    filter: drop-shadow(0 0 8px rgba(145, 28, 237, .95));
+  }
+
+  #di-mockup .hero-footer {
+    position: absolute;
+    z-index: 3;
+    left: 96px;
+    right: 96px;
+    bottom: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--subtle);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    letter-spacing: .8px;
+    font-weight: 600;
+  }
+  #di-mockup .footer-cta {
+    border: 0;
+    background: transparent;
+    color: var(--subtle);
+    cursor: pointer;
+    padding: 0;
+    font-family: var(--font-ui);
+    font-size: 15px;
+    letter-spacing: .8px;
+    font-weight: 600;
+  }
+  #di-mockup .footer-cta:hover { color: var(--ink); }
+
+  /* chapter zh titles */
+  #di-mockup .chapter-hero .chinese-title,
+  #di-mockup .chapter-intro,
+  #di-mockup .case-card strong,
+  #di-mockup .case-card small {
+    font-family: var(--font-zh);
+  }
+  #di-mockup .chapter-hero h2,
+  #di-mockup .chapter-head,
+  #di-mockup .card-kicker,
+  #di-mockup .card-number,
+  #di-mockup .chapter-footer {
+    font-family: var(--font-ui);
+  }
+  #di-mockup .chapter-hero h2 { font-family: var(--font-display); }
+
+  /* 章节页：整页自适应，压缩上下留白尽量一屏显示 */
+  #di-mockup .screen-chapter.is-active {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(14px, 1.8vw, 24px) clamp(24px, 5vw, 96px) clamp(12px, 1.6vw, 20px);
+    box-sizing: border-box;
+    overflow: hidden;
+    background: var(--canvas);
+  }
+  #di-mockup .chapter-head {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0 0 clamp(10px, 1.2vw, 14px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  #di-mockup .back-link {
+    padding: 0;
+    color: var(--muted);
+    font-size: clamp(12px, 1.1vw, 14px);
+    font-weight: 600;
+    letter-spacing: .5px;
+  }
+  #di-mockup .back-link:hover { color: var(--ink); }
+  #di-mockup .chapter-index {
+    color: var(--subtle);
+    font-size: clamp(12px, 1.1vw, 14px);
+    letter-spacing: .6px;
+    font-weight: 600;
+  }
+  #di-mockup .chapter-index span { color: var(--purple-bright); margin: 0 8px; }
+  #di-mockup .chapter-hero {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    margin: 0;
+    padding: clamp(18px, 2.2vw, 28px) 0 clamp(16px, 2vw, 24px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  #di-mockup .chapter-hero .eyebrow { margin: 0 0 clamp(10px, 1.2vw, 16px); }
+  #di-mockup .chapter-hero h2 {
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: -2.8px;
+  }
+  #di-mockup .chapter-hero .chinese-title {
+    margin: clamp(8px, 1vw, 14px) 0 0;
+    font-size: clamp(16px, 1.8vw, 22px);
+  }
+  #di-mockup .chapter-intro {
+    align-self: end;
+    max-width: 34rem;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: clamp(14px, 1.4vw, 17px);
+    line-height: 1.75;
+  }
+  #di-mockup .case-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: clamp(12px, 1.4vw, 16px);
+    margin: 0;
+    padding: clamp(14px, 1.8vw, 20px) 0 clamp(10px, 1.2vw, 14px);
+  }
+  #di-mockup .case-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    min-height: 0;
+    padding: clamp(18px, 2vw, 26px);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    color: var(--ink);
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .24s ease, border-color .24s ease;
+  }
+  #di-mockup .case-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  #di-mockup .case-purple { --accent: var(--purple-bright); background: linear-gradient(135deg, #302143, var(--surface-1) 56%); }
+  #di-mockup .case-cyan { --accent: var(--cyan); background: linear-gradient(135deg, #123a3d, var(--surface-1) 56%); }
+  #di-mockup .case-blue { --accent: var(--blue); background: linear-gradient(135deg, #182956, var(--surface-1) 56%); }
+  #di-mockup .case-violet { --accent: var(--violet); background: linear-gradient(135deg, #1a1838, var(--surface-1) 56%); }
+  #di-mockup .card-number, #di-mockup .card-kicker, #di-mockup .case-card small, #di-mockup .case-arrow { position: relative; z-index: 2; display: block; }
+  #di-mockup .card-number { color: var(--accent); font-size: clamp(12px, 1.1vw, 14px); font-weight: 700; }
+  #di-mockup .card-kicker { margin-top: clamp(14px, 1.6vw, 20px); font-size: clamp(10px, 1vw, 12px); letter-spacing: .7px; font-weight: 700; opacity: .68; }
+  #di-mockup .case-card strong {
+    position: relative;
+    z-index: 2;
+    display: block;
+    margin-top: clamp(8px, 1vw, 12px);
+    font-size: clamp(18px, 2.2vw, 26px);
+    line-height: 1.2;
+    letter-spacing: -.5px;
+  }
+  #di-mockup .case-card small {
+    margin-top: clamp(8px, 1vw, 12px);
+    max-width: none;
+    padding-right: 2.5em;
+    color: var(--muted);
+    font-size: clamp(11px, 1.05vw, 14px);
+    line-height: 1.45;
+    white-space: nowrap;
+  }
+  #di-mockup .case-arrow {
+    position: absolute;
+    z-index: 3;
+    right: clamp(18px, 2vw, 28px);
+    bottom: clamp(16px, 1.8vw, 24px);
+    color: var(--accent);
+    font-size: clamp(20px, 2vw, 26px);
+  }
+  #di-mockup .card-art {
+    position: absolute;
+    right: -16px;
+    bottom: -18px;
+    width: clamp(140px, 16vw, 210px);
+    height: clamp(120px, 14vw, 180px);
+    opacity: .75;
+  }
+  #di-mockup .card-art i { display: block; position: absolute; border: 1px solid currentColor; opacity: .48; }
+  #di-mockup .art-ppt { color: var(--purple-bright); transform: rotate(-20deg); }
+  #di-mockup .art-ppt i:nth-child(1) { inset: 6px 25px 35px 6px; } #di-mockup .art-ppt i:nth-child(2) { inset: 26px 5px 15px 26px; } #di-mockup .art-ppt i:nth-child(3) { left: 12px; right: 18px; top: 55px; } #di-mockup .art-ppt i:nth-child(4) { left: 67px; top: -5px; bottom: 4px; }
+  #di-mockup .art-login { color: var(--blue); }
+  #di-mockup .art-login i:nth-child(1) { width: 70%; height: 70%; right: 12%; top: 10%; border-radius: 8px; } #di-mockup .art-login i:nth-child(2) { width: 44%; height: 6px; right: 24%; top: 32%; background: currentColor; border: 0; } #di-mockup .art-login i:nth-child(3) { width: 44%; height: 6px; right: 24%; top: 46%; background: currentColor; border: 0; }
+  #di-mockup .art-permission { color: var(--cyan); transform: skewY(-15deg); }
+  #di-mockup .art-permission i:nth-child(1) { inset: 6px 14px 13px 8px; } #di-mockup .art-permission i:nth-child(2) { left: 8px; right: 14px; top: 28%; } #di-mockup .art-permission i:nth-child(3) { left: 8px; right: 14px; top: 48%; } #di-mockup .art-permission i:nth-child(4) { left: 8px; right: 14px; top: 68%; } #di-mockup .art-permission i:nth-child(5) { width: 18%; height: 18%; left: 16%; top: 36%; background: currentColor; border: 0; }
+  #di-mockup .art-spec { color: var(--violet); }
+  #di-mockup .art-spec i:nth-child(1) { width: 62%; height: 86%; right: 18%; top: 4%; transform: rotate(7deg); } #di-mockup .art-spec i:nth-child(2) { right: 28%; top: 24%; width: 40%; } #di-mockup .art-spec i:nth-child(3) { right: 28%; top: 40%; width: 30%; } #di-mockup .art-spec i:nth-child(4) { right: 28%; top: 56%; width: 44%; }
+  #di-mockup .chapter-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: clamp(10px, 1.2vw, 14px) 0 0;
+    color: var(--subtle);
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: .6px;
+    font-weight: 600;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  @media (max-width: 820px) {
+    #di-mockup .screen-chapter.is-active {
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+    }
+    #di-mockup .chapter-hero { grid-template-columns: 1fr; gap: 24px; }
+    #di-mockup .case-grid {
+      flex: 0 0 auto;
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    #di-mockup .case-card { min-height: 160px; }
+  }
+
+
+  #di-mockup button:focus-visible { outline: 2px solid var(--purple-bright); outline-offset: 3px; }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('di-mockup');
+    const screens = root.querySelectorAll('[data-screen]');
+    const setView = (target) => {
+      screens.forEach((screen) => screen.classList.toggle('is-active', screen.dataset.screen === target));
+      root.dataset.view = target;
+      if (target === 'home') {
+        root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    root.querySelectorAll('[data-screen-target]').forEach((control) => {
+      control.addEventListener('click', () => setView(control.dataset.screenTarget));
+    });
+    const hash = (location.hash || '').replace('#', '');
+    if (hash === 'chapter') setView('chapter');
+
+    const closeToPortfolio = (event) => {
+      if (window.parent && window.parent !== window) {
+        event.preventDefault();
+        window.parent.postMessage(
+          { type: 'close-design-intelligence' },
+          window.location.origin
+        );
+      }
+    };
+    root.querySelectorAll('[data-close-portfolio]').forEach((control) => {
+      control.addEventListener('click', closeToPortfolio);
+    });
+
+    const reveal = () => {
+      document.documentElement.classList.remove('di-fonts-pending');
+      document.documentElement.classList.add('di-fonts-ready');
+    };
+    const waitFonts = (typeof document.fonts !== 'undefined' && document.fonts.ready)
+      ? document.fonts.ready
+      : Promise.resolve();
+    Promise.race([
+      waitFonts,
+      new Promise((resolve) => setTimeout(resolve, 1200)),
+    ]).then(reveal);
+  })();
+</script>
+  <script src="./page-transition.js" defer></script>
+</body>
+</html>
