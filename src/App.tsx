@@ -464,7 +464,7 @@ export default function App() {
             >
               <CardItem translateZ={0.5} className="absolute inset-0">
                 <img 
-                  src={asset('images/projects/portfolio-resume.webp')} 
+                  src={asset('images/projects/portfolio-resume-2026.webp')} 
                   alt="Resume" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
