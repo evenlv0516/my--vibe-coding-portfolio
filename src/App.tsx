@@ -365,12 +365,13 @@ export default function App() {
     });
   };
 
-  // Handle vertical wheel to horizontal scroll
+  // Handle vertical wheel to horizontal scroll (home only; detail/DI own their scroll)
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
+      if (activeProject || showDesignIntelligence) return;
       // If the user is scrolling vertically, translate it to horizontal
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
@@ -383,7 +384,7 @@ export default function App() {
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleWheel);
-  }, []);
+  }, [activeProject, showDesignIntelligence]);
 
   return (
     <div className="h-screen w-screen bg-[#EBEBEB] text-black overflow-hidden select-none">
@@ -902,7 +903,7 @@ export default function App() {
             <div className="w-full">
               {/* Global Loading Spinner */}
               {isFirstImageLoading && (
-                <div className="fixed inset-0 pt-[400px] flex justify-center z-[205] bg-white/50">
+                <div className="pointer-events-none fixed inset-0 pt-[400px] flex justify-center z-[205] bg-white/50">
                   <Loader2 className="w-10 h-10 animate-spin text-[#dddddd]" />
                 </div>
               )}

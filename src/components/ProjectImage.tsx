@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface ProjectImageProps {
   src: string;
@@ -10,23 +10,38 @@ interface ProjectImageProps {
 
 export const ProjectImage: React.FC<ProjectImageProps> = ({ src, alt, className, isFirst = false, onLoad }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const settledRef = useRef(false);
 
-  const handleLoad = () => {
+  const settle = useCallback(() => {
+    if (settledRef.current) return;
+    settledRef.current = true;
     setIsLoading(false);
-    if (onLoad) {
-      onLoad();
+    onLoad?.();
+  }, [onLoad]);
+
+  useEffect(() => {
+    settledRef.current = false;
+    setIsLoading(true);
+    const img = imgRef.current;
+    if (img?.complete && img.naturalHeight > 0) {
+      settle();
     }
-  };
+  }, [src, settle]);
 
   return (
     <div className={`relative ${className}`}>
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className={`w-full h-auto block bg-white ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}
-        onLoad={handleLoad}
+        onLoad={settle}
+        onError={settle}
         referrerPolicy="no-referrer"
-        loading="lazy"
+        loading={isFirst ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchPriority={isFirst ? 'high' : 'auto'}
       />
     </div>
   );
