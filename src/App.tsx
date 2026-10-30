@@ -386,6 +386,33 @@ export default function App() {
     return () => container.removeEventListener('wheel', handleWheel);
   }, [activeProject, showDesignIntelligence]);
 
+  // Detail overlay: capture wheel at window so first-open / opacity animation
+  // cannot leave the page unable to scroll (body is overflow:hidden).
+  useEffect(() => {
+    if (!activeProject) return;
+
+    const focusDetail = () => {
+      detailContainerRef.current?.focus({ preventScroll: true });
+    };
+    focusDetail();
+    const raf = requestAnimationFrame(focusDetail);
+
+    const onWheel = (e: WheelEvent) => {
+      const el = detailContainerRef.current;
+      if (!el) return;
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      el.scrollTop += e.deltaY;
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false, capture: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('wheel', onWheel, { capture: true });
+    };
+  }, [activeProject]);
+
   return (
     <div className="h-screen w-screen bg-[#EBEBEB] text-black overflow-hidden select-none">
       {/* Top Navigation Bar */}
@@ -841,92 +868,93 @@ export default function App() {
         </div>
       </div>
 
-      {/* Project Detail View Overlay */}
+      {/* Project Detail View Overlay — opacity on outer, scroll on inner */}
       <AnimatePresence>
         {activeProject && (
-          <motion.div 
-            ref={detailContainerRef}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onScroll={handleDetailScroll}
-            className="fixed inset-0 z-[200] bg-white overflow-y-auto scrollbar-overlay"
+            className="fixed inset-0 z-[200] bg-white"
           >
-            {/* Back Button Container */}
-            <div className="fixed top-8 left-8 z-[210]">
-              <AnimatePresence mode="popLayout">
-                {!isDetailScrolled ? (
-                  <motion.button 
-                    key="rect-back"
-                    onClick={() => closePortfolioProject(true)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex items-center justify-center bg-white/70 backdrop-blur-md border border-black/5 text-black hover:bg-black hover:text-white transition-colors rounded-full h-12 px-6 group whitespace-nowrap"
-                  >
-                    <ArrowLeft className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform shrink-0" />
-                    <span className="text-[11px] font-bold uppercase tracking-widest">Back to Portfolio</span>
-                  </motion.button>
-                ) : (
-                  <motion.button 
-                    key="circle-back"
-                    onClick={() => closePortfolioProject(true)}
+            <div
+              ref={detailContainerRef}
+              tabIndex={-1}
+              onScroll={handleDetailScroll}
+              className="relative h-full w-full overflow-y-auto overscroll-contain scrollbar-overlay outline-none"
+            >
+              {/* Back Button Container */}
+              <div className="sticky top-0 z-[210] h-0 overflow-visible pointer-events-none">
+                <div className="absolute top-8 left-8 pointer-events-auto">
+                  <AnimatePresence mode="popLayout">
+                    {!isDetailScrolled ? (
+                      <motion.button 
+                        key="rect-back"
+                        onClick={() => closePortfolioProject(true)}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        className="flex items-center justify-center bg-white/70 backdrop-blur-md border border-black/5 text-black hover:bg-black hover:text-white transition-colors rounded-full h-12 px-6 group whitespace-nowrap"
+                      >
+                        <ArrowLeft className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform shrink-0" />
+                        <span className="text-[11px] font-bold uppercase tracking-widest">Back to Portfolio</span>
+                      </motion.button>
+                    ) : (
+                      <motion.button 
+                        key="circle-back"
+                        onClick={() => closePortfolioProject(true)}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        className="flex items-center justify-center bg-white/70 backdrop-blur-md border border-black/5 text-black hover:bg-black hover:text-white transition-colors rounded-full h-12 w-12"
+                      >
+                        <ArrowLeft className="w-5 h-5" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Back to Top Button */}
+              <AnimatePresence>
+                {isAtBottom && (
+                  <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex items-center justify-center bg-white/70 backdrop-blur-md border border-black/5 text-black hover:bg-black hover:text-white transition-colors rounded-full h-12 w-12"
+                    onClick={() => detailContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="fixed bottom-8 right-8 z-[210] w-8 h-8 rounded-full bg-white/70 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-colors"
                   >
-                    <ArrowLeft className="w-5 h-5" />
+                    <ArrowUp className="w-4 h-4" />
                   </motion.button>
                 )}
               </AnimatePresence>
-            </div>
 
-            {/* Back to Top Button */}
-            <AnimatePresence>
-              {isAtBottom && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  onClick={() => detailContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="fixed bottom-8 right-8 z-[210] w-8 h-8 rounded-full bg-white/70 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-colors"
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </motion.button>
-              )}
-            </AnimatePresence>
-
-            {/* Detail Content - Seamless Gallery */}
-            <div className="w-full">
-              {/* Global Loading Spinner */}
-              {isFirstImageLoading && (
-                <div className="pointer-events-none fixed inset-0 pt-[400px] flex justify-center z-[205] bg-white/50">
-                  <Loader2 className="w-10 h-10 animate-spin text-[#dddddd]" />
+              {/* Detail Content - Seamless Gallery */}
+              <div className="w-full" style={{ minHeight: isFirstImageLoading ? '250vh' : undefined }}>
+                {/* Global Loading Spinner */}
+                {isFirstImageLoading && (
+                  <div className="pointer-events-none absolute inset-0 pt-[400px] flex justify-center z-[205] bg-white/50">
+                    <Loader2 className="w-10 h-10 animate-spin text-[#dddddd]" />
+                  </div>
+                )}
+                {/* Image Gallery */}
+                <div className="flex flex-col">
+                  <div className="w-full">
+                    {activeProject && projectImages[activeProject]?.map((src, index) => (
+                      <ProjectImage
+                        key={index}
+                        src={src} 
+                        alt={`${activeProject} 详情 ${index + 1}`} 
+                        className="w-full h-auto block bg-white"
+                        isFirst={index === 0}
+                        onLoad={index === 0 ? () => setIsFirstImageLoading(false) : undefined}
+                      />
+                    ))}
+                  </div>
                 </div>
-              )}
-              {/* Image Gallery */}
-              <div className="flex flex-col">
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full"
-                >
-                  {activeProject && projectImages[activeProject]?.map((src, index) => (
-                    <ProjectImage
-                      key={index}
-                      src={src} 
-                      alt={`${activeProject} 详情 ${index + 1}`} 
-                      className="w-full h-auto block bg-white"
-                      isFirst={index === 0}
-                      onLoad={index === 0 ? () => setIsFirstImageLoading(false) : undefined}
-                    />
-                  ))}
-                </motion.div>
               </div>
             </div>
           </motion.div>
